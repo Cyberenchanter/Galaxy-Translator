@@ -28,8 +28,6 @@ private slots:
 
     void on_actionClose_triggered();
 
-    void on_PlainEdit_modificationChanged(bool arg1);
-
     void on_PlainEdit_textChanged();
 
 private:

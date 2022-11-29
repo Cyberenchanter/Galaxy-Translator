@@ -8,6 +8,18 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     setCurrentFile(QString());
+    ui->actionNew_File->setShortcuts(QKeySequence::New);
+    ui->actionOpen->setShortcuts(QKeySequence::Open);
+    ui->actionSave->setShortcuts(QKeySequence::Save);
+    ui->actionSave_As->setShortcuts(QKeySequence::SaveAs);
+    ui->actionClose->setShortcuts(QKeySequence::Close);
+    ui->actionCut->setShortcuts(QKeySequence::Cut);
+    ui->actionCopy->setShortcuts(QKeySequence::Copy);
+    ui->actionPaste->setShortcuts(QKeySequence::Paste);
+    connect(ui->actionCut, &QAction::triggered, ui->PlainEdit, &QPlainTextEdit::cut);
+    connect(ui->actionCopy, &QAction::triggered, ui->PlainEdit, &QPlainTextEdit::copy);
+    connect(ui->actionPaste, &QAction::triggered, ui->PlainEdit, &QPlainTextEdit::paste);
+    //disconnect(ui->actionCut, &QAction::triggered, ui->PlainEdit, &QPlainTextEdit::cut);
 }
 
 MainWindow::~MainWindow()
@@ -160,15 +172,8 @@ void MainWindow::on_actionClose_triggered()
     close();
 }
 
-//WIP
-void MainWindow::on_PlainEdit_modificationChanged(bool status)
-{
-//    setWindowModified(status);
-}
-
-
 void MainWindow::on_PlainEdit_textChanged()
 {
-//    setWindowModified(ui->PlainEdit->document()->isModified());
+    setWindowModified(ui->PlainEdit->document()->isModified());
 }
 

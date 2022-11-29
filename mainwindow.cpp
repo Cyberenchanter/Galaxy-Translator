@@ -1,0 +1,174 @@
+#include "mainwindow.h"
+#include <QtWidgets>
+#include "./ui_mainwindow.h"
+
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+    setCurrentFile(QString());
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+bool MainWindow::maybeSave()
+{
+    if (!ui->PlainEdit->document()->isModified())
+        return true;
+    const QMessageBox::StandardButton ret
+        = QMessageBox::warning(this, tr("Application"),
+                               tr("The document has been modified.\n"
+                                  "Do you want to save your changes?"),
+                               QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+    switch (ret) {
+    case QMessageBox::Save:
+        return on_actionSave_triggered();
+    case QMessageBox::Cancel:
+        return false;
+    default:
+        break;
+    }
+    return true;
+}
+
+void MainWindow::setCurrentFile(const QString &fileName)
+{
+    curFile = fileName;
+    ui->PlainEdit->document()->setModified(false);
+    setWindowModified(false);
+
+    QString shownName = curFile;
+    if (curFile.isEmpty())
+        shownName = "untitled.txt";
+    setWindowFilePath(shownName);
+}
+
+void MainWindow::loadFile(const QString &fileName)
+{
+    QFile file(fileName);
+    if (!file.open(QFile::ReadOnly | QFile::Text)) {
+        QMessageBox::warning(this, tr("Application"),
+                             tr("Cannot read file %1:\n%2.")
+                             .arg(QDir::toNativeSeparators(fileName), file.errorString()));
+        return;
+    }
+
+    QTextStream in(&file);
+#ifndef QT_NO_CURSOR
+    QGuiApplication::setOverrideCursor(Qt::WaitCursor);
+#endif
+    ui->PlainEdit->setPlainText(in.readAll());
+#ifndef QT_NO_CURSOR
+    QGuiApplication::restoreOverrideCursor();
+#endif
+
+    setCurrentFile(fileName);
+    ui->statusbar->showMessage(tr("File loaded"), 2000);
+}
+
+bool MainWindow::saveFile(const QString &fileName)
+//! [44] //! [45]
+{
+    QString errorMessage;
+    QGuiApplication::setOverrideCursor(Qt::WaitCursor);
+    QSaveFile file(fileName);
+    if (file.open(QFile::WriteOnly | QFile::Text)) {
+        QTextStream out(&file);
+        out << ui->PlainEdit->toPlainText();
+        if (!file.commit()) {
+            errorMessage = tr("Cannot write file %1:\n%2.")
+                           .arg(QDir::toNativeSeparators(fileName), file.errorString());
+        }
+    } else {
+        errorMessage = tr("Cannot open file %1 for writing:\n%2.")
+                       .arg(QDir::toNativeSeparators(fileName), file.errorString());
+    }
+    QGuiApplication::restoreOverrideCursor();
+
+    if (!errorMessage.isEmpty()) {
+        QMessageBox::warning(this, tr("Application"), errorMessage);
+        return false;
+    }
+
+    setCurrentFile(fileName);
+    ui->statusbar->showMessage(tr("File saved"), 2000);
+    return true;
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+//! [3] //! [4]
+{
+    if (maybeSave()) {
+        event->accept();
+    } else {
+        event->ignore();
+    }
+}
+
+void MainWindow::on_actionNew_File_triggered()
+{
+    if(maybeSave()){
+        ui->PlainEdit->clear();
+        setCurrentFile(QString());
+    }
+}
+
+
+void MainWindow::on_plainTextEdit_textChanged()
+{
+
+}
+
+
+void MainWindow::on_actionOpen_triggered()
+{
+    if (maybeSave()) {
+        QString fileName = QFileDialog::getOpenFileName(this);
+        if (!fileName.isEmpty())
+            loadFile(fileName);
+    }
+}
+
+
+bool MainWindow::on_actionSave_triggered()
+{
+    if (curFile.isEmpty()) {
+        return on_actionSave_As_triggered();
+    } else {
+        return saveFile(curFile);
+    }
+}
+
+
+bool MainWindow::on_actionSave_As_triggered()
+{
+    QFileDialog dialog(this);
+    dialog.setWindowModality(Qt::WindowModal);
+    dialog.setAcceptMode(QFileDialog::AcceptSave);
+    if (dialog.exec() != QDialog::Accepted)
+        return false;
+    return saveFile(dialog.selectedFiles().first());
+}
+
+
+void MainWindow::on_actionClose_triggered()
+{
+    close();
+}
+
+//WIP
+void MainWindow::on_PlainEdit_modificationChanged(bool status)
+{
+//    setWindowModified(status);
+}
+
+
+void MainWindow::on_PlainEdit_textChanged()
+{
+//    setWindowModified(ui->PlainEdit->document()->isModified());
+}
+

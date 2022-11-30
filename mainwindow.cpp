@@ -47,10 +47,48 @@ bool MainWindow::maybeSave()
     return true;
 }
 
+void MainWindow::inittable()
+{
+    rowcount=0;
+    ui->maintable->setRowCount(0);
+}
+
+void MainWindow::parsefile(const QString &buf)
+{
+    mydata ans;
+    bool stat=0;
+    qint64 len=buf.length(),index=0;
+    QString version;
+    for(qint64 i=0;i<len;i++){
+        if(buf[i]=='}'){
+            stat=!stat;
+            if(index>MAXLANGUAGE&&index<=MAXLANGUAGE*2){
+                ans.version[index-MAXLANGUAGE-1]=version.toLongLong();
+                version.clear();
+            }
+            index++;
+        }
+        if(stat){
+            if(index==0)
+                ans.id+=buf[i];
+            if(index>0&&index<=MAXLANGUAGE)
+                ans.lang[index-1]+=buf[i];
+            if(index>MAXLANGUAGE&&index<=MAXLANGUAGE*2){
+                version+=buf[i];
+            }
+
+        }
+        if(buf[i]=='{'){
+            stat=!stat;
+        }
+    }
+    ans.no=mlist.size()+1;
+    mlist.push_back(ans);
+}
+
 void MainWindow::setCurrentFile(const QString &fileName)
 {
     curFile = fileName;
-    ui->PlainEdit->document()->setModified(false);
     setWindowModified(false);
 
     QString shownName = curFile;
@@ -73,7 +111,10 @@ void MainWindow::loadFile(const QString &fileName)
 #ifndef QT_NO_CURSOR
     QGuiApplication::setOverrideCursor(Qt::WaitCursor);
 #endif
-    ui->PlainEdit->setPlainText(in.readAll());
+    QString buf;
+    while (in.readLineInto(&buf)){
+        parsefile(buf);
+    }
 #ifndef QT_NO_CURSOR
     QGuiApplication::restoreOverrideCursor();
 #endif
@@ -124,7 +165,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
 void MainWindow::on_actionNew_File_triggered()
 {
     if(maybeSave()){
-        ui->PlainEdit->clear();
+
         setCurrentFile(QString());
     }
 }

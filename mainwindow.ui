@@ -16,7 +16,33 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
-     <widget class="QPlainTextEdit" name="PlainEdit"/>
+     <widget class="QTableWidget" name="maintable">
+      <column>
+       <property name="text">
+        <string>NO.</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>ID</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Source Language</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Status</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Target Language</string>
+       </property>
+      </column>
+     </widget>
     </item>
    </layout>
   </widget>

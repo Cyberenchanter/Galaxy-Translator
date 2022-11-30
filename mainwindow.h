@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#define MAXLANGUAGE 12
 #include <QMainWindow>
 
 QT_BEGIN_NAMESPACE
@@ -32,6 +33,8 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    void inittable();
+    void parsefile(const QString &buf);
     bool save();
     bool saveAs();
     bool maybeSave();
@@ -40,5 +43,11 @@ private:
     void loadFile(const QString &fileName);
     void closeEvent(QCloseEvent *event);
     QString curFile;
+    int rowcount;
+    struct mydata{
+        qint64 no,version[MAXLANGUAGE];
+        QString id,lang[MAXLANGUAGE];
+    };
+    QList<mydata> mlist;
 };
 #endif // MAINWINDOW_H

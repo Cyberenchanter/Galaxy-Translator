@@ -53,6 +53,24 @@ void MainWindow::inittable()
     ui->maintable->setRowCount(0);
 }
 
+void MainWindow::updatestat()
+{
+    qint64 len=mlist.size();
+    for(int i=0;i<len;i++){
+        if(!mlist[i].lang[lang_ori].isEmpty()){
+            if(mlist[i].version[lang_ori]>mlist[i].version[lang_tar])
+                mlist_stat[i]=1;
+            if(mlist[i].version[lang_ori]==mlist[i].version[lang_tar])
+                mlist_stat[i]=2;
+        }else{
+            if(!mlist[i].lang[lang_tar].isEmpty()){
+                if(mlist[i].version[lang_ori]>mlist[i].version[lang_tar])
+                    mlist_stat[i]=3;
+            }
+        }
+    }
+}
+
 void MainWindow::parsefile(const QString &buf)
 {
     mydata ans;

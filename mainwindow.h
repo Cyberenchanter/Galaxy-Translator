@@ -8,6 +8,13 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
+QT_BEGIN_NAMESPACE
+class QAction;
+class QMenu;
+class QPlainTextEdit;
+class QSessionManager;
+QT_END_NAMESPACE
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -28,6 +35,11 @@ private slots:
     bool on_actionSave_As_triggered();
 
     void on_actionClose_triggered();
+
+
+    void on_comboBox_textActivated(const QString &arg1);
+
+    void on_comboBox_2_textActivated(const QString &arg1);
 
 private:
     Ui::MainWindow *ui;

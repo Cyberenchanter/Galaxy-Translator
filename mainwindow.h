@@ -29,8 +29,6 @@ private slots:
 
     void on_actionClose_triggered();
 
-    void on_PlainEdit_textChanged();
-
 private:
     Ui::MainWindow *ui;
     void inittable();

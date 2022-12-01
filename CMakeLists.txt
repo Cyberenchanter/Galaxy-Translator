@@ -18,7 +18,14 @@ set(PROJECT_SOURCES
         mainwindow.h
         mainwindow.ui
 )
-
+set(Galaxy-Translator_resource_files
+    "images/copy.png"
+    "images/cut.png"
+    "images/new.png"
+    "images/open.png"
+    "images/paste.png"
+    "images/save.png"
+)
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(Galaxy-Translator
         MANUAL_FINALIZATION

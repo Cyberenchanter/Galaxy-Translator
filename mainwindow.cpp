@@ -20,6 +20,13 @@ MainWindow::MainWindow(QWidget *parent)
     //connect(ui->actionCopy, &QAction::triggered, ui->PlainEdit, &QPlainTextEdit::copy);
     //connect(ui->actionPaste, &QAction::triggered, ui->PlainEdit, &QPlainTextEdit::paste);
     //disconnect(ui->actionCut, &QAction::triggered, ui->PlainEdit, &QPlainTextEdit::cut);
+    // toolbar
+    ui->toolButton_new->setIcon(QIcon(":/images/new.png"));
+    ui->toolButton_open->setIcon(QIcon(":/images/open.png"));
+    ui->toolButton_paste->setIcon(QIcon(":/images/paste.png"));
+    ui->toolButton_cut->setIcon(QIcon(":/images/cut.png"));
+    ui->toolButton_save->setIcon(QIcon(":/images/save.png"));
+    ui->toolButton_copy->setIcon(QIcon(":/images/copy.png"));
 }
 
 MainWindow::~MainWindow()
@@ -241,3 +248,17 @@ void MainWindow::on_actionClose_triggered()
 {
     close();
 }
+
+
+void MainWindow::on_comboBox_textActivated(const QString &arg1)
+{
+//    ui->comboBox->setText(arg1);
+    //接下来把值赋给语言就可以了
+}
+
+
+void MainWindow::on_comboBox_2_textActivated(const QString &arg1)
+{
+//    ui->comboBox_2->setText(arg1);
+}
+

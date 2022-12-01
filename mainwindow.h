@@ -48,16 +48,18 @@ private:
     bool save();
     bool saveAs();
     bool maybeSave();
+    void updatestat();
     void setCurrentFile(const QString &fileName);
     bool saveFile(const QString &fileName);
     void loadFile(const QString &fileName);
     void closeEvent(QCloseEvent *event);
     QString curFile;
-    int rowcount;
+    int rowcount,lang_ori,lang_tar;
     struct mydata{
         qint64 no,version[MAXLANGUAGE];
         QString id,lang[MAXLANGUAGE];
     };
     QList<mydata> mlist;
+    QList<int> mlist_stat;
 };
 #endif // MAINWINDOW_H

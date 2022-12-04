@@ -18,16 +18,11 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>40</y>
+      <y>60</y>
       <width>781</width>
-      <height>192</height>
+      <height>401</height>
      </rect>
     </property>
-    <column>
-     <property name="text">
-      <string>NO.</string>
-     </property>
-    </column>
     <column>
      <property name="text">
       <string>ID</string>
@@ -127,90 +122,63 @@
      <string>...</string>
     </property>
    </widget>
-   <widget class="QComboBox" name="comboBox">
+   <widget class="QComboBox" name="lang_ori_select">
     <property name="geometry">
      <rect>
-      <x>440</x>
-      <y>10</y>
+      <x>390</x>
+      <y>20</y>
       <width>82</width>
       <height>25</height>
      </rect>
     </property>
-    <item>
-     <property name="text">
-      <string>1</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>2</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>3</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>4</string>
-     </property>
-    </item>
    </widget>
-   <widget class="QComboBox" name="comboBox_2">
+   <widget class="QComboBox" name="lang_tar_select">
     <property name="geometry">
      <rect>
-      <x>700</x>
-      <y>10</y>
+      <x>500</x>
+      <y>20</y>
       <width>82</width>
       <height>25</height>
      </rect>
     </property>
-    <item>
-     <property name="text">
-      <string>1</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>2</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>3</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>4</string>
-     </property>
-    </item>
    </widget>
-   <widget class="QLabel" name="label">
+   <widget class="QLabel" name="lang_ori">
     <property name="geometry">
      <rect>
-      <x>300</x>
-      <y>10</y>
-      <width>141</width>
+      <x>400</x>
+      <y>0</y>
+      <width>51</width>
       <height>20</height>
      </rect>
     </property>
     <property name="text">
-     <string>SourceLanguage :</string>
+     <string>Source</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_2">
+   <widget class="QLabel" name="lang_tar">
     <property name="geometry">
      <rect>
-      <x>530</x>
-      <y>10</y>
-      <width>171</width>
+      <x>510</x>
+      <y>0</y>
+      <width>41</width>
       <height>20</height>
      </rect>
     </property>
     <property name="text">
-     <string>DestinationLanguage :</string>
+     <string>Target</string>
+    </property>
+   </widget>
+   <widget class="QToolButton" name="toolButton_newItem">
+    <property name="geometry">
+     <rect>
+      <x>250</x>
+      <y>10</y>
+      <width>27</width>
+      <height>26</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>...</string>
     </property>
    </widget>
   </widget>
@@ -220,7 +188,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>31</height>
+     <height>37</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -240,6 +208,8 @@
     <addaction name="actionCut"/>
     <addaction name="actionCopy"/>
     <addaction name="actionPaste"/>
+    <addaction name="separator"/>
+    <addaction name="actionNew_Item"/>
    </widget>
    <widget class="QMenu" name="menu_About">
     <property name="title">
@@ -295,6 +265,11 @@
   <action name="actionNope">
    <property name="text">
     <string>Nope</string>
+   </property>
+  </action>
+  <action name="actionNew_Item">
+   <property name="text">
+    <string>New Item</string>
    </property>
   </action>
  </widget>

@@ -27,11 +27,35 @@ MainWindow::MainWindow(QWidget *parent)
     ui->toolButton_cut->setIcon(QIcon(":/images/cut.png"));
     ui->toolButton_save->setIcon(QIcon(":/images/save.png"));
     ui->toolButton_copy->setIcon(QIcon(":/images/copy.png"));
+    for(int i=0;i<MAXLANGUAGE;i++){
+        ui->lang_ori_select->addItem(lang_code[i]);
+        ui->lang_tar_select->addItem(lang_code[i]);
+    }
+    ui->lang_ori_select->setCurrentIndex(1);
+    ui->lang_tar_select->setCurrentIndex(10);
+    lang_ori=1;
+    lang_tar=10;
+    SetComboBoxItemEnabled(ui->lang_tar_select,lang_ori,0);
+    SetComboBoxItemEnabled(ui->lang_ori_select,lang_tar,0);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::SetComboBoxItemEnabled(QComboBox * comboBox, int index, bool enabled)
+{
+    if(index<0)
+        return;
+    auto * model = qobject_cast<QStandardItemModel*>(comboBox->model());
+    assert(model);
+    if(!model) return;
+
+    auto * item = model->item(index);
+    assert(item);
+    if(!item) return;
+    item->setEnabled(enabled);
 }
 
 bool MainWindow::maybeSave()
@@ -66,13 +90,13 @@ void MainWindow::updatestat()
     for(int i=0;i<len;i++){
         if(!mlist[i].lang[lang_ori].isEmpty()){
             if(mlist[i].version[lang_ori]>mlist[i].version[lang_tar])
-                mlist_stat[i]=1;
+                mlist[i].stat=1;
             if(mlist[i].version[lang_ori]==mlist[i].version[lang_tar])
-                mlist_stat[i]=2;
+                mlist[i].stat=2;
         }else{
             if(!mlist[i].lang[lang_tar].isEmpty()){
                 if(mlist[i].version[lang_ori]>mlist[i].version[lang_tar])
-                    mlist_stat[i]=3;
+                    mlist[i].stat=3;
             }
         }
     }
@@ -80,35 +104,6 @@ void MainWindow::updatestat()
 
 void MainWindow::parsefile(const QString &buf)
 {
-    mydata ans;
-    bool stat=0;
-    qint64 len=buf.length(),index=0;
-    QString version;
-    for(qint64 i=0;i<len;i++){
-        if(buf[i]=='}'){
-            stat=!stat;
-            if(index>MAXLANGUAGE&&index<=MAXLANGUAGE*2){
-                ans.version[index-MAXLANGUAGE-1]=version.toLongLong();
-                version.clear();
-            }
-            index++;
-        }
-        if(stat){
-            if(index==0)
-                ans.id+=buf[i];
-            if(index>0&&index<=MAXLANGUAGE)
-                ans.lang[index-1]+=buf[i];
-            if(index>MAXLANGUAGE&&index<=MAXLANGUAGE*2){
-                version+=buf[i];
-            }
-
-        }
-        if(buf[i]=='{'){
-            stat=!stat;
-        }
-    }
-    ans.no=mlist.size()+1;
-    mlist.push_back(ans);
 }
 
 void MainWindow::setCurrentFile(const QString &fileName)
@@ -160,7 +155,7 @@ bool MainWindow::saveFile(const QString &fileName)
         for(qint64 i=0;i<len;i++){
             for(int j=0;j<=MAXLANGUAGE*2;j++){
                 if(j==0)
-                    out<<"{"<<mlist[i].id<<"}";
+                    out<<"{"<<"}";
                 if(j>0&&j<=MAXLANGUAGE)
                     out<<"{"<<mlist[i].lang[j-1]<<"}";
                 if(j>MAXLANGUAGE&&j<=MAXLANGUAGE*2){
@@ -198,19 +193,77 @@ void MainWindow::closeEvent(QCloseEvent *event)
         event->ignore();
     }
 }
+void MainWindow::import_gamestring(const QString &filename,int lang_index){
+    QFile file(filename);
+    if(!file.exists())
+        return;
+    if (!file.open(QFile::ReadOnly | QFile::Text)) {
+        QMessageBox::warning(this, tr("Application"),
+                             tr("Cannot read file %1:\n%2.")
+                             .arg(QDir::toNativeSeparators(filename), file.errorString()));
+        return;
+    }
 
+    QTextStream in(&file);
+    int index;
+    QString buf,id,text;
+    while (in.readLineInto(&buf)){
+        index=0;
+        while(buf[index] != '=')
+            index++;
+        id=buf.left(index);
+        text=buf.right(buf.length()-1-index);
+        mymap[id].lang[lang_index]=text;
+        if(lang_index == lang_ori){
+            mymap[id].version[lang_index]++;
+        }
+    }
+}
+void MainWindow::updaterow(mydata dat,int row){
+    ui->maintable->setItem(row,0,dat.id);
+    ui->maintable->setItem(row,1,dat.ori);
+    ui->maintable->setItem(row,2,dat.stat_display);
+    ui->maintable->setItem(row,3,dat.tar);
+}
+void MainWindow::import_project(){
+    #ifndef QT_NO_CURSOR
+        QGuiApplication::setOverrideCursor(Qt::WaitCursor);
+    #endif
+    QString path;
+    for(int i=0;i<MAXLANGUAGE;i++){
+        path=dir+lang_code[i]+".SC2Data/LocalizedData/GameStrings.txt";
+        import_gamestring(path,i);
+    }
+    int index=0;
+    for(auto i=mymap.begin();i!=mymap.end();++i){
+        ui->maintable->insertRow(index);
+        i.value().id = new QTableWidgetItem(i.key());
+        i.value().ori = new QTableWidgetItem(i.value().lang[lang_ori]);
+        i.value().tar = new QTableWidgetItem(i.value().lang[lang_tar]);
+        i.value().stat_display = new QTableWidgetItem(stat_code[i.value().stat]);
+        updaterow(i.value(),index);
+        index++;
+    }
+    #ifndef QT_NO_CURSOR
+        QGuiApplication::restoreOverrideCursor();
+    #endif
+}
 void MainWindow::on_actionNew_File_triggered()
 {
     if(maybeSave()){
-        setCurrentFile(QString());
+        QFileInfo fileinfo = QFileInfo(QFileDialog::getOpenFileName(this, tr("Open File"),"",tr("ComponentList (*.SC2Components *.SC2Mod)")));
+        if(fileinfo.suffix()=="SC2Components"){
+            dir=fileinfo.absolutePath();
+        }else{
+            if(fileinfo.suffix()=="SC2Mod"){
+                dir=fileinfo.absoluteFilePath();
+            }
+        }
+        dir+="/";
+        import_project();
     }
 }
 
-
-void MainWindow::on_plainTextEdit_textChanged()
-{
-
-}
 
 
 void MainWindow::on_actionOpen_triggered()
@@ -250,15 +303,29 @@ void MainWindow::on_actionClose_triggered()
 }
 
 
-void MainWindow::on_comboBox_textActivated(const QString &arg1)
+void MainWindow::on_lang_ori_select_activated(int index)
 {
-//    ui->comboBox->setText(arg1);
-    //接下来把值赋给语言就可以了
+    if(lang_ori==index)
+        return;
+    SetComboBoxItemEnabled(ui->lang_tar_select,lang_ori,1);
+    lang_ori=index;
+    SetComboBoxItemEnabled(ui->lang_tar_select,lang_ori,0);
 }
 
 
-void MainWindow::on_comboBox_2_textActivated(const QString &arg1)
+void MainWindow::on_lang_tar_select_activated(int index)
 {
-//    ui->comboBox_2->setText(arg1);
+    if(lang_tar==index)
+        return;
+    SetComboBoxItemEnabled(ui->lang_ori_select,lang_tar,1);
+    lang_tar=index;
+    SetComboBoxItemEnabled(ui->lang_ori_select,lang_tar,0);
+}
+
+
+void MainWindow::on_actionNew_Item_triggered()
+{
+    ui->maintable->insertRow(ui->maintable->currentRow());
+
 }
 

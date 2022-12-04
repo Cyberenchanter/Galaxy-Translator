@@ -3,6 +3,7 @@
 
 #define MAXLANGUAGE 12
 #include <QMainWindow>
+#include <QtWidgets>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -26,8 +27,6 @@ public:
 private slots:
     void on_actionNew_File_triggered();
 
-    void on_plainTextEdit_textChanged();
-
     void on_actionOpen_triggered();
 
     bool on_actionSave_triggered();
@@ -36,10 +35,11 @@ private slots:
 
     void on_actionClose_triggered();
 
+    void on_lang_ori_select_activated(int index);
 
-    void on_comboBox_textActivated(const QString &arg1);
+    void on_lang_tar_select_activated(int index);
 
-    void on_comboBox_2_textActivated(const QString &arg1);
+    void on_actionNew_Item_triggered();
 
 private:
     Ui::MainWindow *ui;
@@ -48,18 +48,27 @@ private:
     bool save();
     bool saveAs();
     bool maybeSave();
+    void import_gamestring(const QString &fileName,int lang_index);
+    void import_project();
     void updatestat();
+
     void setCurrentFile(const QString &fileName);
     bool saveFile(const QString &fileName);
     void loadFile(const QString &fileName);
     void closeEvent(QCloseEvent *event);
-    QString curFile;
-    int rowcount,lang_ori,lang_tar;
+    void SetComboBoxItemEnabled(QComboBox * comboBox, int index, bool enabled);
+    QString curFile,dir;
+    QString lang_code[MAXLANGUAGE]={"deDE","enUS","esES","esMX","frFR","itIT","koKR","plPL","ptBR","ruRU","zhCN","zhTW"};
+    QString stat_code[4]={"Unknown","Needs Translation","Translated","Pending Deletion"};
+    int rowcount,lang_ori=-1,lang_tar=-1;
     struct mydata{
-        qint64 no,version[MAXLANGUAGE];
-        QString id,lang[MAXLANGUAGE];
+        qint64 version[MAXLANGUAGE];
+        QString lang[MAXLANGUAGE];
+        int stat=0;
+        QTableWidgetItem *id,*stat_display,*ori,*tar;
     };
+    void updaterow(mydata dat,int row);
+    QMap<QString,mydata> mymap;
     QList<mydata> mlist;
-    QList<int> mlist_stat;
 };
 #endif // MAINWINDOW_H

@@ -31,10 +31,10 @@ MainWindow::MainWindow(QWidget *parent)
         ui->lang_ori_select->addItem(lang_code[i]);
         ui->lang_tar_select->addItem(lang_code[i]);
     }
-    ui->lang_ori_select->setCurrentIndex(1);
-    ui->lang_tar_select->setCurrentIndex(10);
-    lang_ori=1;
-    lang_tar=10;
+    ui->lang_ori_select->setCurrentIndex(10);
+    ui->lang_tar_select->setCurrentIndex(1);
+    lang_ori=10;
+    lang_tar=1;
     SetComboBoxItemEnabled(ui->lang_tar_select,lang_ori,0);
     SetComboBoxItemEnabled(ui->lang_ori_select,lang_tar,0);
 }
@@ -86,24 +86,52 @@ void MainWindow::inittable()
 
 void MainWindow::updatestat()
 {
-    qint64 len=mlist.size();
-    for(int i=0;i<len;i++){
-        if(!mlist[i].lang[lang_ori].isEmpty()){
-            if(mlist[i].version[lang_ori]>mlist[i].version[lang_tar])
-                mlist[i].stat=1;
-            if(mlist[i].version[lang_ori]==mlist[i].version[lang_tar])
-                mlist[i].stat=2;
+    for(auto i=mymap.begin();i!=mymap.end();++i){
+        if(!i.value().lang[lang_ori].isEmpty()){
+            if(i.value().version[lang_ori]>i.value().version[lang_tar])
+                i.value().stat=1;
+            if(i.value().version[lang_ori]==i.value().version[lang_tar])
+                i.value().stat=2;
         }else{
-            if(!mlist[i].lang[lang_tar].isEmpty()){
-                if(mlist[i].version[lang_ori]>mlist[i].version[lang_tar])
-                    mlist[i].stat=3;
+            if(!i.value().lang[lang_tar].isEmpty()){
+                if(i.value().version[lang_ori]>i.value().version[lang_tar])
+                    i.value().stat=3;
             }
         }
+        i.value().stat_display->setText(stat_code[i.value().stat]);
     }
 }
 
 void MainWindow::parsefile(const QString &buf)
 {
+    mydata ans;
+    bool stat=0;
+    qint64 len=buf.length(),index=0;
+    QString version,id;
+    for(qint64 i=0;i<len;i++){
+        if(buf[i]=='}'){
+            stat=!stat;
+            if(index>MAXLANGUAGE&&index<=MAXLANGUAGE*2){
+                ans.version[index-MAXLANGUAGE-1]=version.toLongLong();
+                version.clear();
+            }
+            index++;
+        }
+        if(stat){
+            if(index==0)
+                id+=buf[i];
+            if(index>0&&index<=MAXLANGUAGE)
+                ans.lang[index-1]+=buf[i];
+            if(index>MAXLANGUAGE&&index<=MAXLANGUAGE*2){
+                version+=buf[i];
+            }
+
+        }
+        if(buf[i]=='{'){
+            stat=!stat;
+        }
+    }
+    mymap.insert(id,ans);
 }
 
 void MainWindow::setCurrentFile(const QString &fileName)
@@ -135,6 +163,17 @@ void MainWindow::loadFile(const QString &fileName)
     while (in.readLineInto(&buf)){
         parsefile(buf);
     }
+    int index=0;
+    for(auto i=mymap.begin();i!=mymap.end();++i){
+        ui->maintable->insertRow(index);
+        i.value().id = new QTableWidgetItem(i.key());
+        i.value().ori = new QTableWidgetItem(i.value().lang[lang_ori]);
+        i.value().tar = new QTableWidgetItem(i.value().lang[lang_tar]);
+        i.value().stat_display = new QTableWidgetItem(stat_code[i.value().stat]);
+        updaterow(i.value(),index);
+        index++;
+    }
+    updatestat();
 #ifndef QT_NO_CURSOR
     QGuiApplication::restoreOverrideCursor();
 #endif
@@ -151,15 +190,14 @@ bool MainWindow::saveFile(const QString &fileName)
     QSaveFile file(fileName);
     if (file.open(QFile::WriteOnly | QFile::Text)) {
         QTextStream out(&file);
-        qint64 len=mlist.size();
-        for(qint64 i=0;i<len;i++){
+        for(auto i=mymap.begin();i!=mymap.end();++i){
             for(int j=0;j<=MAXLANGUAGE*2;j++){
                 if(j==0)
-                    out<<"{"<<"}";
+                    out<<"{"<<i.key()<<"}";
                 if(j>0&&j<=MAXLANGUAGE)
-                    out<<"{"<<mlist[i].lang[j-1]<<"}";
+                    out<<"{"<<i.value().lang[j-1]<<"}";
                 if(j>MAXLANGUAGE&&j<=MAXLANGUAGE*2){
-                    out<<"{"<<mlist[i].version[j-1-MAXLANGUAGE]<<"}";
+                    out<<"{"<<i.value().version[j-1-MAXLANGUAGE]<<"}";
                 }
             }
             Qt::endl(out);
@@ -261,6 +299,7 @@ void MainWindow::on_actionNew_File_triggered()
         }
         dir+="/";
         import_project();
+        updatestat();
     }
 }
 
@@ -269,7 +308,7 @@ void MainWindow::on_actionNew_File_triggered()
 void MainWindow::on_actionOpen_triggered()
 {
     if (maybeSave()) {
-        QString fileName = QFileDialog::getOpenFileName(this);
+        QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"),"",tr("Galaxy Translator Project (*.galaxytrans)"));
         if (!fileName.isEmpty())
             loadFile(fileName);
     }
@@ -289,8 +328,9 @@ bool MainWindow::on_actionSave_triggered()
 bool MainWindow::on_actionSave_As_triggered()
 {
     QFileDialog dialog(this);
-    dialog.setWindowModality(Qt::WindowModal);
     dialog.setAcceptMode(QFileDialog::AcceptSave);
+    dialog.setNameFilter("Galaxy Translator Project (*.galaxytrans)");
+    dialog.setDefaultSuffix("galaxytrans");
     if (dialog.exec() != QDialog::Accepted)
         return false;
     return saveFile(dialog.selectedFiles().first());
@@ -310,6 +350,10 @@ void MainWindow::on_lang_ori_select_activated(int index)
     SetComboBoxItemEnabled(ui->lang_tar_select,lang_ori,1);
     lang_ori=index;
     SetComboBoxItemEnabled(ui->lang_tar_select,lang_ori,0);
+    for(auto i=mymap.begin();i!=mymap.end();++i){
+        i.value().ori->setText(i.value().lang[lang_ori]);
+    }
+    updatestat();
 }
 
 
@@ -320,6 +364,10 @@ void MainWindow::on_lang_tar_select_activated(int index)
     SetComboBoxItemEnabled(ui->lang_ori_select,lang_tar,1);
     lang_tar=index;
     SetComboBoxItemEnabled(ui->lang_ori_select,lang_tar,0);
+    for(auto i=mymap.begin();i!=mymap.end();++i){
+        i.value().tar->setText(i.value().lang[lang_tar]);
+    }
+    updatestat();
 }
 
 

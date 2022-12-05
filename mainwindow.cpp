@@ -163,15 +163,22 @@ void MainWindow::loadFile(const QString &fileName)
     while (in.readLineInto(&buf)){
         parsefile(buf);
     }
-    int index=0;
+    int index=ui->maintable->rowCount();
     for(auto i=mymap.begin();i!=mymap.end();++i){
-        ui->maintable->insertRow(index);
-        i.value().id = new QTableWidgetItem(i.key());
-        i.value().ori = new QTableWidgetItem(i.value().lang[lang_ori]);
-        i.value().tar = new QTableWidgetItem(i.value().lang[lang_tar]);
-        i.value().stat_display = new QTableWidgetItem(stat_code[i.value().stat]);
-        updaterow(i.value(),index);
-        index++;
+        if(i.value().id==nullptr){
+            ui->maintable->insertRow(index);
+            i.value().id = new QTableWidgetItem(i.key());
+            i.value().id->setFlags(i.value().id->flags() & (~Qt::ItemIsEditable));
+            i.value().ori = new QTableWidgetItem(i.value().lang[lang_ori]);
+            i.value().tar = new QTableWidgetItem(i.value().lang[lang_tar]);
+            i.value().stat_display = new QTableWidgetItem();
+            i.value().stat_display->setFlags(i.value().stat_display->flags() & (~Qt::ItemIsEditable));
+            updaterow(i.value(),index);
+            index++;
+        }else{
+            i.value().ori->setText(i.value().lang[lang_ori]);
+            i.value().tar->setText(i.value().lang[lang_tar]);
+        }
     }
     updatestat();
 #ifndef QT_NO_CURSOR
@@ -272,16 +279,24 @@ void MainWindow::import_project(){
         path=dir+lang_code[i]+".SC2Data/LocalizedData/GameStrings.txt";
         import_gamestring(path,i);
     }
-    int index=0;
+    int index=ui->maintable->rowCount();
     for(auto i=mymap.begin();i!=mymap.end();++i){
-        ui->maintable->insertRow(index);
-        i.value().id = new QTableWidgetItem(i.key());
-        i.value().ori = new QTableWidgetItem(i.value().lang[lang_ori]);
-        i.value().tar = new QTableWidgetItem(i.value().lang[lang_tar]);
-        i.value().stat_display = new QTableWidgetItem(stat_code[i.value().stat]);
-        updaterow(i.value(),index);
-        index++;
+        if(i.value().id==nullptr){
+            ui->maintable->insertRow(index);
+            i.value().id = new QTableWidgetItem(i.key());
+            i.value().id->setFlags(i.value().id->flags() & (~Qt::ItemIsEditable));
+            i.value().ori = new QTableWidgetItem(i.value().lang[lang_ori]);
+            i.value().tar = new QTableWidgetItem(i.value().lang[lang_tar]);
+            i.value().stat_display = new QTableWidgetItem();
+            i.value().stat_display->setFlags(i.value().stat_display->flags() & (~Qt::ItemIsEditable));
+            updaterow(i.value(),index);
+            index++;
+        }else{
+            i.value().ori->setText(i.value().lang[lang_ori]);
+            i.value().tar->setText(i.value().lang[lang_tar]);
+        }
     }
+    updatestat();
     #ifndef QT_NO_CURSOR
         QGuiApplication::restoreOverrideCursor();
     #endif
@@ -299,7 +314,6 @@ void MainWindow::on_actionNew_File_triggered()
         }
         dir+="/";
         import_project();
-        updatestat();
     }
 }
 
@@ -374,6 +388,12 @@ void MainWindow::on_lang_tar_select_activated(int index)
 void MainWindow::on_actionNew_Item_triggered()
 {
     ui->maintable->insertRow(ui->maintable->currentRow());
+
+}
+
+
+void MainWindow::on_maintable_itemChanged(QTableWidgetItem *item)
+{
 
 }
 

@@ -41,6 +41,8 @@ private slots:
 
     void on_actionNew_Item_triggered();
 
+    void on_maintable_itemChanged(QTableWidgetItem *item);
+
 private:
     Ui::MainWindow *ui;
     void inittable();

@@ -37,6 +37,8 @@ MainWindow::MainWindow(QWidget *parent)
     lang_tar=1;
     SetComboBoxItemEnabled(ui->lang_tar_select,lang_ori,0);
     SetComboBoxItemEnabled(ui->lang_ori_select,lang_tar,0);
+    // 表格可拖动
+    ui->maintable->setMouseTracking(true);
 }
 
 MainWindow::~MainWindow()
@@ -377,3 +379,7 @@ void MainWindow::on_actionNew_Item_triggered()
 
 }
 
+void MainWindow::resizeEvent(QResizeEvent *event)
+{
+    ui->maintable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+}

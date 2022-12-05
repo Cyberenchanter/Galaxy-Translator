@@ -57,6 +57,9 @@ private:
     void loadFile(const QString &fileName);
     void closeEvent(QCloseEvent *event);
     void SetComboBoxItemEnabled(QComboBox * comboBox, int index, bool enabled);
+    // 窗口放缩
+    void resizeEvent(QResizeEvent *event);
+
     QString curFile,dir;
     QString lang_code[MAXLANGUAGE]={"deDE","enUS","esES","esMX","frFR","itIT","koKR","plPL","ptBR","ruRU","zhCN","zhTW"};
     QString stat_code[4]={"Unknown","Needs Translation","Translated","Pending Deletion"};

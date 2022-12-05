@@ -39,9 +39,7 @@ private slots:
 
     void on_lang_tar_select_activated(int index);
 
-    void on_actionNew_Item_triggered();
-
-    void on_maintable_itemChanged(QTableWidgetItem *item);
+    void on_maintable_cellChanged(int row, int column);
 
 private:
     Ui::MainWindow *ui;
@@ -52,8 +50,7 @@ private:
     bool maybeSave();
     void import_gamestring(const QString &fileName,int lang_index);
     void import_project();
-    void updatestat();
-
+    void savetable();
     void setCurrentFile(const QString &fileName);
     bool saveFile(const QString &fileName);
     void loadFile(const QString &fileName);
@@ -67,10 +64,11 @@ private:
         qint64 version[MAXLANGUAGE];
         QString lang[MAXLANGUAGE];
         int stat=0;
-        QTableWidgetItem *id,*stat_display,*ori,*tar;
+        QTableWidgetItem *id=nullptr,*stat_display=nullptr,*ori=nullptr,*tar=nullptr;
     };
-    void updaterow(mydata dat,int row);
+    void updatestat(mydata &dat);
+    void updaterow(mydata &dat,int row);
     QMap<QString,mydata> mymap;
-    QList<mydata> mlist;
+    QList<mydata *> row2dat;
 };
 #endif // MAINWINDOW_H

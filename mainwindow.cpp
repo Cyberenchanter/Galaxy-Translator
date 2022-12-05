@@ -84,27 +84,26 @@ void MainWindow::inittable()
     ui->maintable->setRowCount(0);
 }
 
-void MainWindow::updatestat()
+void MainWindow::updatestat(mydata &i)
 {
-    for(auto i=mymap.begin();i!=mymap.end();++i){
-        if(!i.value().lang[lang_ori].isEmpty()){
-            if(i.value().version[lang_ori]>i.value().version[lang_tar])
-                i.value().stat=1;
-            if(i.value().version[lang_ori]==i.value().version[lang_tar])
-                i.value().stat=2;
-        }else{
-            if(!i.value().lang[lang_tar].isEmpty()){
-                if(i.value().version[lang_ori]>i.value().version[lang_tar])
-                    i.value().stat=3;
-            }
+    if(!i.lang[lang_ori].isEmpty()){
+        if(i.version[lang_ori]>i.version[lang_tar])
+            i.stat=1;
+        if(i.version[lang_ori]==i.version[lang_tar])
+            i.stat=2;
+    }else{
+        if(!i.lang[lang_tar].isEmpty()){
+            if(i.version[lang_ori]>i.version[lang_tar])
+                i.stat=3;
         }
-        i.value().stat_display->setText(stat_code[i.value().stat]);
     }
+    i.stat_display->setText(stat_code[i.stat]);
 }
 
 void MainWindow::parsefile(const QString &buf)
 {
     mydata ans;
+    //ans.id=ans.ori=ans.tar=ans.stat_display=nullptr;
     bool stat=0;
     qint64 len=buf.length(),index=0;
     QString version,id;
@@ -131,6 +130,8 @@ void MainWindow::parsefile(const QString &buf)
             stat=!stat;
         }
     }
+    if(id.isEmpty())
+        return;
     mymap.insert(id,ans);
 }
 
@@ -179,8 +180,8 @@ void MainWindow::loadFile(const QString &fileName)
             i.value().ori->setText(i.value().lang[lang_ori]);
             i.value().tar->setText(i.value().lang[lang_tar]);
         }
+        updatestat(i.value());
     }
-    updatestat();
 #ifndef QT_NO_CURSOR
     QGuiApplication::restoreOverrideCursor();
 #endif
@@ -194,6 +195,7 @@ bool MainWindow::saveFile(const QString &fileName)
 {
     QString errorMessage;
     QGuiApplication::setOverrideCursor(Qt::WaitCursor);
+    savetable();
     QSaveFile file(fileName);
     if (file.open(QFile::WriteOnly | QFile::Text)) {
         QTextStream out(&file);
@@ -264,11 +266,16 @@ void MainWindow::import_gamestring(const QString &filename,int lang_index){
         }
     }
 }
-void MainWindow::updaterow(mydata dat,int row){
+void MainWindow::updaterow(mydata &dat,int row){
     ui->maintable->setItem(row,0,dat.id);
     ui->maintable->setItem(row,1,dat.ori);
     ui->maintable->setItem(row,2,dat.stat_display);
     ui->maintable->setItem(row,3,dat.tar);
+    if(row>=row2dat.size()){
+        row2dat.push_back(&dat);
+    }else{
+        row2dat[row]=&dat;
+    }
 }
 void MainWindow::import_project(){
     #ifndef QT_NO_CURSOR
@@ -295,15 +302,24 @@ void MainWindow::import_project(){
             i.value().ori->setText(i.value().lang[lang_ori]);
             i.value().tar->setText(i.value().lang[lang_tar]);
         }
+        updatestat(i.value());
     }
-    updatestat();
     #ifndef QT_NO_CURSOR
         QGuiApplication::restoreOverrideCursor();
     #endif
 }
+
+void MainWindow::savetable()
+{
+    for(auto i=mymap.begin();i!=mymap.end();++i){
+        i.value().lang[lang_ori]=i.value().ori->text();
+        i.value().lang[lang_tar]=i.value().tar->text();
+    }
+}
 void MainWindow::on_actionNew_File_triggered()
 {
     if(maybeSave()){
+        ui->maintable->blockSignals(true);
         QFileInfo fileinfo = QFileInfo(QFileDialog::getOpenFileName(this, tr("Open File"),"",tr("ComponentList (*.SC2Components *.SC2Mod)")));
         if(fileinfo.suffix()=="SC2Components"){
             dir=fileinfo.absolutePath();
@@ -314,6 +330,7 @@ void MainWindow::on_actionNew_File_triggered()
         }
         dir+="/";
         import_project();
+        ui->maintable->blockSignals(false);
     }
 }
 
@@ -322,9 +339,11 @@ void MainWindow::on_actionNew_File_triggered()
 void MainWindow::on_actionOpen_triggered()
 {
     if (maybeSave()) {
+        ui->maintable->blockSignals(true);
         QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"),"",tr("Galaxy Translator Project (*.galaxytrans)"));
         if (!fileName.isEmpty())
             loadFile(fileName);
+        ui->maintable->blockSignals(false);
     }
 }
 
@@ -361,13 +380,16 @@ void MainWindow::on_lang_ori_select_activated(int index)
 {
     if(lang_ori==index)
         return;
+    ui->maintable->blockSignals(true);
+    savetable();
     SetComboBoxItemEnabled(ui->lang_tar_select,lang_ori,1);
     lang_ori=index;
     SetComboBoxItemEnabled(ui->lang_tar_select,lang_ori,0);
     for(auto i=mymap.begin();i!=mymap.end();++i){
         i.value().ori->setText(i.value().lang[lang_ori]);
+        updatestat(i.value());
     }
-    updatestat();
+    ui->maintable->blockSignals(false);
 }
 
 
@@ -375,25 +397,23 @@ void MainWindow::on_lang_tar_select_activated(int index)
 {
     if(lang_tar==index)
         return;
+    ui->maintable->blockSignals(true);
+    savetable();
     SetComboBoxItemEnabled(ui->lang_ori_select,lang_tar,1);
     lang_tar=index;
     SetComboBoxItemEnabled(ui->lang_ori_select,lang_tar,0);
     for(auto i=mymap.begin();i!=mymap.end();++i){
         i.value().tar->setText(i.value().lang[lang_tar]);
+        updatestat(i.value());
     }
-    updatestat();
+    ui->maintable->blockSignals(false);
 }
 
-
-void MainWindow::on_actionNew_Item_triggered()
+void MainWindow::on_maintable_cellChanged(int row, int column)
 {
-    ui->maintable->insertRow(ui->maintable->currentRow());
-
-}
-
-
-void MainWindow::on_maintable_itemChanged(QTableWidgetItem *item)
-{
-
+    if(column==1){
+        row2dat[row]->version[lang_ori]++;
+        updatestat(*row2dat[row]);
+    }
 }
 

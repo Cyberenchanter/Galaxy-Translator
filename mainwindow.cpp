@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "iodialog.h"
 #include <QtWidgets>
 #include "./ui_mainwindow.h"
 
@@ -280,6 +281,8 @@ void MainWindow::updaterow(mydata &dat,int row){
     }
 }
 void MainWindow::import_project(){
+    IODialog iodiag;
+    iodiag.show();
     #ifndef QT_NO_CURSOR
         QGuiApplication::setOverrideCursor(Qt::WaitCursor);
     #endif
@@ -423,3 +426,26 @@ void MainWindow::on_maintable_cellChanged(int row, int column)
         updatestat(*row2dat[row]);
     }
 }
+
+void MainWindow::on_actionApprove_triggered()
+{
+    auto tmp=ui->maintable->selectedRanges();
+    mydata *k;
+    for(auto i=tmp.begin();i!=tmp.end();++i){
+        for(int j=i->topRow();j<=i->bottomRow();j++){
+            k=row2dat[j];
+            if(k->stat==1){
+                k->version[lang_tar]=k->version[lang_ori];
+                updatestat(*k);
+            }else{
+                if(k->stat==3){
+                    k->lang[lang_tar]=QString();
+                    k->tar->setText(QString());
+                    k->version[lang_tar]=k->version[lang_ori];
+                    updatestat(*k);
+                }
+            }
+        }
+    }
+}
+

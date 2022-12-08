@@ -58,7 +58,7 @@
      </widget>
     </item>
     <item row="0" column="6" rowspan="2">
-     <widget class="QToolButton" name="toolButton_newItem">
+     <widget class="QToolButton" name="toolButton_approve">
       <property name="text">
        <string>...</string>
       </property>
@@ -116,18 +116,20 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>31</height>
+     <height>37</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
     <property name="title">
      <string>&amp;File</string>
     </property>
-    <addaction name="actionNew_File"/>
     <addaction name="actionOpen"/>
     <addaction name="actionSave"/>
     <addaction name="actionSave_As"/>
     <addaction name="actionClose"/>
+    <addaction name="separator"/>
+    <addaction name="actionNew_File"/>
+    <addaction name="actionExport_Project"/>
    </widget>
    <widget class="QMenu" name="menu_Edit">
     <property name="title">
@@ -137,7 +139,7 @@
     <addaction name="actionCopy"/>
     <addaction name="actionPaste"/>
     <addaction name="separator"/>
-    <addaction name="actionNew_Item"/>
+    <addaction name="actionApprove"/>
    </widget>
    <widget class="QMenu" name="menu_About">
     <property name="title">
@@ -152,7 +154,7 @@
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionNew_File">
    <property name="text">
-    <string>New File</string>
+    <string>Import Project</string>
    </property>
   </action>
   <action name="actionOpen">
@@ -195,9 +197,14 @@
     <string>Nope</string>
    </property>
   </action>
-  <action name="actionNew_Item">
+  <action name="actionApprove">
    <property name="text">
-    <string>New Item</string>
+    <string>Approve Translation(s)</string>
+   </property>
+  </action>
+  <action name="actionExport_Project">
+   <property name="text">
+    <string>Export Project</string>
    </property>
   </action>
  </widget>
@@ -292,6 +299,22 @@
     <hint type="sourcelabel">
      <x>223</x>
      <y>53</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButton_approve</sender>
+   <signal>clicked()</signal>
+   <receiver>actionApprove</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>228</x>
+     <y>73</y>
     </hint>
     <hint type="destinationlabel">
      <x>-1</x>

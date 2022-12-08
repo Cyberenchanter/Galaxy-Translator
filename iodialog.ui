@@ -1,0 +1,486 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>IODialog</class>
+ <widget class="QDialog" name="IODialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>600</width>
+    <height>480</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <widget class="QDialogButtonBox" name="buttonBox">
+   <property name="geometry">
+    <rect>
+     <x>210</x>
+     <y>440</y>
+     <width>341</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <property name="standardButtons">
+    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="comp_label">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>30</y>
+     <width>141</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Component Folder:</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="comp_path">
+   <property name="geometry">
+    <rect>
+     <x>160</x>
+     <y>35</y>
+     <width>341</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="comp_select">
+   <property name="geometry">
+    <rect>
+     <x>519</x>
+     <y>26</y>
+     <width>31</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>images/open.png</normaloff>images/open.png</iconset>
+   </property>
+  </widget>
+  <widget class="QGroupBox" name="lang">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>80</y>
+     <width>531</width>
+     <height>261</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Language Options</string>
+   </property>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="QLabel" name="lang_de">
+      <property name="text">
+       <string>deDE</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QComboBox" name="combo_de">
+      <item>
+       <property name="text">
+        <string>Don't Update</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>New Item Only</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Update All</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+    <item row="0" column="2">
+     <widget class="QLabel" name="lang_ko">
+      <property name="text">
+       <string>koKR</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="3">
+     <widget class="QComboBox" name="combo_ko">
+      <item>
+       <property name="text">
+        <string>Don't Update</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>New Item Only</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Update All</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLabel" name="lang_en">
+      <property name="text">
+       <string>enUS</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="QComboBox" name="combo_en">
+      <item>
+       <property name="text">
+        <string>Don't Update</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>New Item Only</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Update All</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+    <item row="1" column="2">
+     <widget class="QLabel" name="lang_pl">
+      <property name="text">
+       <string>plPL</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="3">
+     <widget class="QComboBox" name="combo_pl">
+      <item>
+       <property name="text">
+        <string>Don't Update</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>New Item Only</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Update All</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <widget class="QLabel" name="lang_es">
+      <property name="text">
+       <string>esES</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="1">
+     <widget class="QComboBox" name="combo_es">
+      <item>
+       <property name="text">
+        <string>Don't Update</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>New Item Only</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Update All</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+    <item row="2" column="2">
+     <widget class="QLabel" name="lang_pt">
+      <property name="text">
+       <string>ptBR</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="3">
+     <widget class="QComboBox" name="combo_pt">
+      <item>
+       <property name="text">
+        <string>Don't Update</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>New Item Only</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Update All</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+    <item row="3" column="0">
+     <widget class="QLabel" name="lang_esmx">
+      <property name="text">
+       <string>esMX</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="1">
+     <widget class="QComboBox" name="combo_esmx">
+      <item>
+       <property name="text">
+        <string>Don't Update</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>New Item Only</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Update All</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+    <item row="3" column="2">
+     <widget class="QLabel" name="lang_ru">
+      <property name="text">
+       <string>ruRU</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="3">
+     <widget class="QComboBox" name="combo_ru">
+      <item>
+       <property name="text">
+        <string>Don't Update</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>New Item Only</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Update All</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+    <item row="4" column="0">
+     <widget class="QLabel" name="lang_fr">
+      <property name="text">
+       <string>frFR</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="1">
+     <widget class="QComboBox" name="combo_fr">
+      <item>
+       <property name="text">
+        <string>Don't Update</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>New Item Only</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Update All</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+    <item row="4" column="2">
+     <widget class="QLabel" name="lang_zhcn">
+      <property name="text">
+       <string>zhCN</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="3">
+     <widget class="QComboBox" name="combo_zhcn">
+      <item>
+       <property name="text">
+        <string>Don't Update</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>New Item Only</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Update All</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+    <item row="5" column="0">
+     <widget class="QLabel" name="lang_it">
+      <property name="text">
+       <string>itIT</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="1">
+     <widget class="QComboBox" name="combo_it">
+      <item>
+       <property name="text">
+        <string>Don't Update</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>New Item Only</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Update All</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+    <item row="5" column="2">
+     <widget class="QLabel" name="lang_zhtw">
+      <property name="text">
+       <string>zhTW</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="3">
+     <widget class="QComboBox" name="combo_zhtw">
+      <item>
+       <property name="text">
+        <string>Don't Update</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>New Item Only</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Update All</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QGroupBox" name="misc">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>350</y>
+     <width>531</width>
+     <height>71</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Misc</string>
+   </property>
+   <widget class="QCheckBox" name="is_reduct">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>20</y>
+      <width>281</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Reduct Development Only Strings</string>
+    </property>
+    <property name="checked">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="is_trigger_merge">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>40</y>
+      <width>281</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Merge Trigger Strings</string>
+    </property>
+    <property name="checked">
+     <bool>true</bool>
+    </property>
+    <property name="tristate">
+     <bool>false</bool>
+    </property>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>IODialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>248</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>IODialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

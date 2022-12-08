@@ -41,6 +41,8 @@ private slots:
 
     void on_maintable_cellChanged(int row, int column);
 
+    void on_actionApprove_triggered();
+
 private:
     Ui::MainWindow *ui;
     void inittable();

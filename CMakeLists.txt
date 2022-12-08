@@ -20,6 +20,8 @@ set(PROJECT_SOURCES
         iodialog.h
         iodialog.cpp
         iodialog.ui
+        texteditor.h
+        texteditor.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "iodialog.h"
+#include "texteditor.h"
 #include <QtWidgets>
 #include "./ui_mainwindow.h"
 
@@ -40,6 +41,10 @@ MainWindow::MainWindow(QWidget *parent)
     SetComboBoxItemEnabled(ui->lang_ori_select,lang_tar,0);
     // 表格可拖动
     ui->maintable->setMouseTracking(true);
+    texteditor* deleagater = new texteditor;
+    ui->maintable->setItemDelegateForColumn(0,deleagater);
+    ui->maintable->setItemDelegateForColumn(1,deleagater);
+    ui->maintable->setItemDelegateForColumn(3,deleagater);
 }
 
 MainWindow::~MainWindow()

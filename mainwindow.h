@@ -50,6 +50,8 @@ private slots:
 
     void on_maintable_cellDoubleClicked(int row, int column);
 
+    void on_actionExport_Project_triggered();
+
 private:
     Ui::MainWindow *ui;
     void inittable();
@@ -59,6 +61,7 @@ private:
     bool maybeSave();
     void import_gamestring(const QString &fileName,int lang_index,iooptions &opt);
     void import_project(iooptions &option);
+    void export_project(iooptions &option);
     void savetable();
     void setCurrentFile(const QString &fileName);
     bool saveFile(const QString &fileName);
@@ -66,7 +69,7 @@ private:
     void closeEvent(QCloseEvent *event);
     void SetComboBoxItemEnabled(QComboBox * comboBox, int index, bool enabled);
 
-    QString curFile,dir;
+    QString curFile;
     QString lang_code[MAXLANGUAGE]={"deDE","enUS","esES","esMX","frFR","itIT","koKR","plPL","ptBR","ruRU","zhCN","zhTW"};
     QString stat_code[4]={"Unknown","Needs Translation","Translated","Pending Deletion"};
     int rowcount,lang_ori=-1,lang_tar=-1;

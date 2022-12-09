@@ -332,6 +332,40 @@ void MainWindow::import_project(iooptions &option){
     #endif
 }
 
+void MainWindow::export_project(iooptions &option){
+    #ifndef QT_NO_CURSOR
+        QGuiApplication::setOverrideCursor(Qt::WaitCursor);
+    #endif
+    QString path;
+    for(int i=0;i<MAXLANGUAGE;i++){
+        if(option.lang_state[i]<=0||option.lang_state[i]>2)
+            continue;
+        path=option.dir+lang_code[i]+".SC2Data/LocalizedData/GameStrings.txt";
+        QFile file(path);
+        if (!file.open(QFile::WriteOnly | QFile::Text)) {
+            QMessageBox::warning(this, tr("Application"),
+                                 tr("Cannot write to file %1:\n%2.")
+                                 .arg(QDir::toNativeSeparators(path), file.errorString()));
+            return;
+        }
+        QTextStream out(&file);
+        for(auto j=mymap.begin();j!=mymap.end();++j){
+            if(option.misc[0]){
+                if(j.key().startsWith("Abil"))
+                    continue;
+                if(j.key().startsWith("Effect"))
+                    continue;
+            }
+            out<<j.key()<<"="<<j.value().lang[i];
+            Qt::endl(out);
+        }
+        file.close();
+    }
+    #ifndef QT_NO_CURSOR
+        QGuiApplication::restoreOverrideCursor();
+    #endif
+}
+
 void MainWindow::savetable()
 {
     for(auto i=mymap.begin();i!=mymap.end();++i){
@@ -494,5 +528,17 @@ void MainWindow::on_maintable_cellDoubleClicked(int row, int column)
     if(h<=ui->maintable->rowHeight(row))
         return;
     ui->maintable->setRowHeight(row,h);
+}
+
+
+void MainWindow::on_actionExport_Project_triggered()
+{
+    savetable();
+    IODialog iodiag;
+    iooptions options;
+    if(iodiag.exec()==QDialog::Accepted){
+        iodiag.getoptions(options);
+        export_project(options);
+    }
 }
 

@@ -23,6 +23,11 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    struct iooptions{
+        QString dir;
+        int lang_state[MAXLANGUAGE];
+        bool misc[2];
+    };
 
 private slots:
     void on_actionNew_File_triggered();
@@ -52,8 +57,8 @@ private:
     bool save();
     bool saveAs();
     bool maybeSave();
-    void import_gamestring(const QString &fileName,int lang_index);
-    void import_project();
+    void import_gamestring(const QString &fileName,int lang_index,iooptions &opt);
+    void import_project(iooptions &option);
     void savetable();
     void setCurrentFile(const QString &fileName);
     bool saveFile(const QString &fileName);
@@ -66,12 +71,12 @@ private:
     QString stat_code[4]={"Unknown","Needs Translation","Translated","Pending Deletion"};
     int rowcount,lang_ori=-1,lang_tar=-1;
     struct mydata{
-        qint64 version[MAXLANGUAGE];
+        qint64 version[MAXLANGUAGE]={};
         QString lang[MAXLANGUAGE];
         int stat=0;
         QTableWidgetItem *id=nullptr,*stat_display=nullptr,*ori=nullptr,*tar=nullptr;
     };
-    void updatestat(mydata &dat);
+    void updatestat(mydata *dat);
     void updaterow(mydata &dat,int row);
     QMap<QString,mydata> mymap;
     QList<mydata *> row2dat;

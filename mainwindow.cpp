@@ -95,20 +95,22 @@ void MainWindow::inittable()
     ui->maintable->setRowCount(0);
 }
 
-void MainWindow::updatestat(mydata &i)
+void MainWindow::updatestat(mydata *i)
 {
-    if(!i.lang[lang_ori].isEmpty()){
-        if(i.version[lang_ori]>i.version[lang_tar])
-            i.stat=1;
-        if(i.version[lang_ori]==i.version[lang_tar])
-            i.stat=2;
+    if(!i->lang[lang_ori].isEmpty()){
+        if(i->version[lang_ori]>i->version[lang_tar])
+            i->stat=1;
+        if(i->version[lang_ori]==i->version[lang_tar])
+            i->stat=2;
     }else{
-        if(!i.lang[lang_tar].isEmpty()){
-            if(i.version[lang_ori]>i.version[lang_tar])
-                i.stat=3;
+        if(!i->lang[lang_tar].isEmpty()){
+            if(i->version[lang_ori]>i->version[lang_tar])
+                i->stat=3;
+        }else{
+            i->stat=0;
         }
     }
-    i.stat_display->setText(stat_code[i.stat]);
+    i->stat_display->setData(0,stat_code[i->stat]);
 }
 
 void MainWindow::parsefile(const QString &buf)
@@ -191,7 +193,7 @@ void MainWindow::loadFile(const QString &fileName)
             i.value().ori->setText(i.value().lang[lang_ori]);
             i.value().tar->setText(i.value().lang[lang_tar]);
         }
-        updatestat(i.value());
+        updatestat(&i.value());
     }
 #ifndef QT_NO_CURSOR
     QGuiApplication::restoreOverrideCursor();
@@ -251,32 +253,6 @@ void MainWindow::closeEvent(QCloseEvent *event)
         event->ignore();
     }
 }
-void MainWindow::import_gamestring(const QString &filename,int lang_index){
-    QFile file(filename);
-    if(!file.exists())
-        return;
-    if (!file.open(QFile::ReadOnly | QFile::Text)) {
-        QMessageBox::warning(this, tr("Application"),
-                             tr("Cannot read file %1:\n%2.")
-                             .arg(QDir::toNativeSeparators(filename), file.errorString()));
-        return;
-    }
-
-    QTextStream in(&file);
-    int index;
-    QString buf,id,text;
-    while (in.readLineInto(&buf)){
-        index=0;
-        while(buf[index] != '=')
-            index++;
-        id=buf.left(index);
-        text=buf.right(buf.length()-1-index);
-        mymap[id].lang[lang_index]=text;
-        if(lang_index == lang_ori){
-            mymap[id].version[lang_index]++;
-        }
-    }
-}
 void MainWindow::updaterow(mydata &dat,int row){
     ui->maintable->setItem(row,0,dat.id);
     ui->maintable->setItem(row,1,dat.ori);
@@ -288,16 +264,50 @@ void MainWindow::updaterow(mydata &dat,int row){
         row2dat[row]=&dat;
     }
 }
-void MainWindow::import_project(){
-    IODialog iodiag;
-    iodiag.show();
+void MainWindow::import_gamestring(const QString &filename,int lang_index,iooptions &opt){
+    if(opt.lang_state[lang_index]<=0||opt.lang_state[lang_index]>2)
+        return;
+    QFile file(filename);
+    if (!file.open(QFile::ReadOnly | QFile::Text)) {
+        QMessageBox::warning(this, tr("Application"),
+                             tr("Cannot read file %1:\n%2.")
+                             .arg(QDir::toNativeSeparators(filename), file.errorString()));
+        return;
+    }
+    QTextStream in(&file);
+    int index;
+    QString buf,id,text;
+    while (in.readLineInto(&buf)){
+        index=0;
+        while(buf[index] != '=')
+            index++;
+        id=buf.left(index);
+        if(opt.misc[0]){
+            if(id.startsWith("Abil"))
+                continue;
+            if(id.startsWith("Effect"))
+                continue;
+        }
+        text=buf.right(buf.length()-1-index);
+        if(opt.lang_state[lang_index]==1){
+            if(mymap[id].lang[lang_index].isEmpty())
+                mymap[id].lang[lang_index]=text;
+        }else{
+            if(mymap[id].lang[lang_index]!=text){
+                mymap[id].lang[lang_index]=text;
+                mymap[id].version[lang_index]++;
+            }
+        }
+    }
+}
+void MainWindow::import_project(iooptions &option){
     #ifndef QT_NO_CURSOR
         QGuiApplication::setOverrideCursor(Qt::WaitCursor);
     #endif
     QString path;
     for(int i=0;i<MAXLANGUAGE;i++){
-        path=dir+lang_code[i]+".SC2Data/LocalizedData/GameStrings.txt";
-        import_gamestring(path,i);
+        path=option.dir+lang_code[i]+".SC2Data/LocalizedData/GameStrings.txt";
+        import_gamestring(path,i,option);
     }
     int index=ui->maintable->rowCount();
     for(auto i=mymap.begin();i!=mymap.end();++i){
@@ -308,14 +318,14 @@ void MainWindow::import_project(){
             i.value().ori = new QTableWidgetItem(i.value().lang[lang_ori]);
             i.value().tar = new QTableWidgetItem(i.value().lang[lang_tar]);
             i.value().stat_display = new QTableWidgetItem();
-            i.value().stat_display->setFlags(i.value().stat_display->flags() & (~Qt::ItemIsEditable));
+            i.value().stat_display->setFlags(i.value().stat_display->flags() & (~Qt::ItemIsEditable) & (~Qt::ItemIsSelectable));
             updaterow(i.value(),index);
             index++;
         }else{
             i.value().ori->setText(i.value().lang[lang_ori]);
             i.value().tar->setText(i.value().lang[lang_tar]);
         }
-        updatestat(i.value());
+        updatestat(&i.value());
     }
     #ifndef QT_NO_CURSOR
         QGuiApplication::restoreOverrideCursor();
@@ -331,18 +341,26 @@ void MainWindow::savetable()
 }
 void MainWindow::on_actionNew_File_triggered()
 {
-    if(maybeSave()){
+//    if(maybeSave()){
+//        ui->maintable->blockSignals(true);
+//        QFileInfo fileinfo = QFileInfo(QFileDialog::getOpenFileName(this, tr("Open File"),"",tr("ComponentList (*.SC2Components *.SC2Mod)")));
+//        if(fileinfo.suffix()=="SC2Components"){
+//            dir=fileinfo.absolutePath();
+//        }else{
+//            if(fileinfo.suffix()=="SC2Mod"){
+//                dir=fileinfo.absoluteFilePath();
+//            }
+//        }
+//        dir+="/";
+//        import_project();
+//        ui->maintable->blockSignals(false);
+//    }
+    IODialog iodiag;
+    iooptions options;
+    if(iodiag.exec()==QDialog::Accepted){
         ui->maintable->blockSignals(true);
-        QFileInfo fileinfo = QFileInfo(QFileDialog::getOpenFileName(this, tr("Open File"),"",tr("ComponentList (*.SC2Components *.SC2Mod)")));
-        if(fileinfo.suffix()=="SC2Components"){
-            dir=fileinfo.absolutePath();
-        }else{
-            if(fileinfo.suffix()=="SC2Mod"){
-                dir=fileinfo.absoluteFilePath();
-            }
-        }
-        dir+="/";
-        import_project();
+        iodiag.getoptions(options);
+        import_project(options);
         ui->maintable->blockSignals(false);
     }
 }
@@ -400,7 +418,7 @@ void MainWindow::on_lang_ori_select_activated(int index)
     SetComboBoxItemEnabled(ui->lang_tar_select,lang_ori,0);
     for(auto i=mymap.begin();i!=mymap.end();++i){
         i.value().ori->setText(i.value().lang[lang_ori]);
-        updatestat(i.value());
+        updatestat(&i.value());
     }
     ui->maintable->blockSignals(false);
 }
@@ -417,7 +435,7 @@ void MainWindow::on_lang_tar_select_activated(int index)
     SetComboBoxItemEnabled(ui->lang_ori_select,lang_tar,0);
     for(auto i=mymap.begin();i!=mymap.end();++i){
         i.value().tar->setText(i.value().lang[lang_tar]);
-        updatestat(i.value());
+        updatestat(&i.value());
     }
     ui->maintable->blockSignals(false);
 }
@@ -427,7 +445,7 @@ void MainWindow::on_maintable_cellChanged(int row, int column)
 {
     if(column==1){
         row2dat[row]->version[lang_ori]++;
-        updatestat(*row2dat[row]);
+        updatestat(row2dat[row]);
     }
 }
 
@@ -440,19 +458,18 @@ void MainWindow::on_actionApprove_triggered()
             k=row2dat[j];
             if(k->stat==1){
                 k->version[lang_tar]=k->version[lang_ori];
-                updatestat(*k);
+                updatestat(k);
             }else{
                 if(k->stat==3){
                     k->lang[lang_tar]=QString();
                     k->tar->setText(QString());
                     k->version[lang_tar]=k->version[lang_ori];
-                    updatestat(*k);
+                    updatestat(k);
                 }
             }
         }
     }
 }
-
 
 void MainWindow::on_maintable_cellDoubleClicked(int row, int column)
 {

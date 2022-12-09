@@ -43,6 +43,8 @@ private slots:
 
     void on_actionApprove_triggered();
 
+    void on_maintable_cellDoubleClicked(int row, int column);
+
 private:
     Ui::MainWindow *ui;
     void inittable();
@@ -58,8 +60,6 @@ private:
     void loadFile(const QString &fileName);
     void closeEvent(QCloseEvent *event);
     void SetComboBoxItemEnabled(QComboBox * comboBox, int index, bool enabled);
-    // 窗口放缩
-    void resizeEvent(QResizeEvent *event);
 
     QString curFile,dir;
     QString lang_code[MAXLANGUAGE]={"deDE","enUS","esES","esMX","frFR","itIT","koKR","plPL","ptBR","ruRU","zhCN","zhTW"};

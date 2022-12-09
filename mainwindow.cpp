@@ -41,8 +41,11 @@ MainWindow::MainWindow(QWidget *parent)
     SetComboBoxItemEnabled(ui->lang_ori_select,lang_tar,0);
     // 表格可拖动
     ui->maintable->setMouseTracking(true);
+    ui->maintable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui->maintable->horizontalHeader()->setSectionResizeMode(0,QHeaderView::Interactive);
+    ui->maintable->horizontalHeader()->setSectionResizeMode(2,QHeaderView::ResizeToContents);
     texteditor* deleagater = new texteditor;
-    ui->maintable->setItemDelegateForColumn(0,deleagater);
+    //ui->maintable->setItemDelegateForColumn(0,deleagater);
     ui->maintable->setItemDelegateForColumn(1,deleagater);
     ui->maintable->setItemDelegateForColumn(3,deleagater);
 }
@@ -418,10 +421,6 @@ void MainWindow::on_lang_tar_select_activated(int index)
     }
     ui->maintable->blockSignals(false);
 }
-void MainWindow::resizeEvent(QResizeEvent *event)
-{
-    ui->maintable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-}
 
 
 void MainWindow::on_maintable_cellChanged(int row, int column)
@@ -452,5 +451,31 @@ void MainWindow::on_actionApprove_triggered()
             }
         }
     }
+}
+
+
+void MainWindow::on_maintable_cellDoubleClicked(int row, int column)
+{
+    if(column!=1&&column!=3)
+        return;
+    int h=0,w=ui->maintable->columnWidth(column);
+    QTableWidgetItem *item;
+    QLabel tem;
+    tem.setMaximumWidth(w);
+    tem.setMinimumWidth(w);
+    tem.setWordWrap(true);
+    item=row2dat[row]->ori;
+    tem.setText(item->text());
+    tem.adjustSize();
+    h=tem.height();
+    item=row2dat[row]->tar;
+    tem.setText(item->text());
+    tem.adjustSize();
+    if(tem.height()>h)
+        h=tem.height();
+    h+=30;
+    if(h<=ui->maintable->rowHeight(row))
+        return;
+    ui->maintable->setRowHeight(row,h);
 }
 

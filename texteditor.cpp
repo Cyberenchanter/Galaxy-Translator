@@ -13,7 +13,7 @@ QWidget *texteditor::createEditor(QWidget *parent, const QStyleOptionViewItem &o
     editor->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     return editor;
 }
-void texteditor::setEditorData(QWidget *editor, const QModelIndex &index) const
+/*void texteditor::setEditorData(QWidget *editor, const QModelIndex &index) const
 {
     QString value = index.model()->data(index, Qt::EditRole).toString();
     QPlainTextEdit newTextEdit= static_cast<QPlainTextEdit>(editor);
@@ -24,7 +24,7 @@ void texteditor::setModelData(QWidget *editor, QAbstractItemModel *model, const 
     QPlainTextEdit newTextEdit= static_cast<QPlainTextEdit>(editor);
     QString value = newTextEdit.toPlainText();
     model->setData(index, value, Qt::EditRole);
-}
+}*/
 void texteditor::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
     editor->setGeometry(option.rect);

@@ -373,6 +373,16 @@ void MainWindow::savetable()
         i.value().lang[lang_tar]=i.value().tar->text();
     }
 }
+void MainWindow::preptableforupdate(bool is)
+{
+    if(is){
+        ui->maintable->horizontalHeader()->setSectionResizeMode(2,QHeaderView::Stretch);
+        ui->maintable->blockSignals(true);
+    }else{
+        ui->maintable->blockSignals(false);
+        ui->maintable->horizontalHeader()->setSectionResizeMode(2,QHeaderView::ResizeToContents);
+    }
+}
 void MainWindow::on_actionNew_File_triggered()
 {
 //    if(maybeSave()){
@@ -392,10 +402,10 @@ void MainWindow::on_actionNew_File_triggered()
     IODialog iodiag;
     iooptions options;
     if(iodiag.exec()==QDialog::Accepted){
-        ui->maintable->blockSignals(true);
+        preptableforupdate(true);
         iodiag.getoptions(options);
         import_project(options);
-        ui->maintable->blockSignals(false);
+        preptableforupdate(false);
     }
 }
 
@@ -404,11 +414,11 @@ void MainWindow::on_actionNew_File_triggered()
 void MainWindow::on_actionOpen_triggered()
 {
     if (maybeSave()) {
-        ui->maintable->blockSignals(true);
+        preptableforupdate(true);
         QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"),"",tr("Galaxy Translator Project (*.galaxytrans)"));
         if (!fileName.isEmpty())
             loadFile(fileName);
-        ui->maintable->blockSignals(false);
+        preptableforupdate(false);
     }
 }
 
@@ -445,7 +455,7 @@ void MainWindow::on_lang_ori_select_activated(int index)
 {
     if(lang_ori==index)
         return;
-    ui->maintable->blockSignals(true);
+    preptableforupdate(true);
     savetable();
     SetComboBoxItemEnabled(ui->lang_tar_select,lang_ori,1);
     lang_ori=index;
@@ -454,7 +464,7 @@ void MainWindow::on_lang_ori_select_activated(int index)
         i.value().ori->setText(i.value().lang[lang_ori]);
         updatestat(&i.value());
     }
-    ui->maintable->blockSignals(false);
+    preptableforupdate(false);
 }
 
 
@@ -462,7 +472,7 @@ void MainWindow::on_lang_tar_select_activated(int index)
 {
     if(lang_tar==index)
         return;
-    ui->maintable->blockSignals(true);
+    preptableforupdate(true);
     savetable();
     SetComboBoxItemEnabled(ui->lang_ori_select,lang_tar,1);
     lang_tar=index;
@@ -471,7 +481,7 @@ void MainWindow::on_lang_tar_select_activated(int index)
         i.value().tar->setText(i.value().lang[lang_tar]);
         updatestat(&i.value());
     }
-    ui->maintable->blockSignals(false);
+    preptableforupdate(false);
 }
 
 
@@ -485,6 +495,7 @@ void MainWindow::on_maintable_cellChanged(int row, int column)
 
 void MainWindow::on_actionApprove_triggered()
 {
+    preptableforupdate(true);
     auto tmp=ui->maintable->selectedRanges();
     mydata *k;
     for(auto i=tmp.begin();i!=tmp.end();++i){
@@ -503,6 +514,7 @@ void MainWindow::on_actionApprove_triggered()
             }
         }
     }
+    preptableforupdate(false);
 }
 
 void MainWindow::on_maintable_cellDoubleClicked(int row, int column)

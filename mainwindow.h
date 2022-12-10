@@ -79,6 +79,7 @@ private:
         int stat=0;
         QTableWidgetItem *id=nullptr,*stat_display=nullptr,*ori=nullptr,*tar=nullptr;
     };
+    void preptableforupdate(bool is);
     void updatestat(mydata *dat);
     void updaterow(mydata &dat,int row);
     QMap<QString,mydata> mymap;

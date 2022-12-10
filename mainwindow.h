@@ -52,6 +52,8 @@ private slots:
 
     void on_actionExport_Project_triggered();
 
+    void on_actionCopy_triggered();
+
 private:
     Ui::MainWindow *ui;
     void inittable();

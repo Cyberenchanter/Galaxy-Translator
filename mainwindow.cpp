@@ -554,3 +554,47 @@ void MainWindow::on_actionExport_Project_triggered()
     }
 }
 
+
+void MainWindow::on_actionCopy_triggered()
+{
+    QClipboard* clipboard = QApplication::clipboard();
+    QString text;
+    auto tmp=ui->maintable->selectedRanges();
+    if(tmp.size()==1){
+        auto tmp2=tmp.begin();
+        if(tmp2->topRow()==tmp2->bottomRow()&&tmp2->leftColumn()==tmp2->rightColumn()){
+            switch(tmp2->leftColumn()){
+            case 0: text=row2dat[tmp2->topRow()]->id->text();break;
+            case 1: text=row2dat[tmp2->topRow()]->ori->text();break;
+            case 3: text=row2dat[tmp2->topRow()]->tar->text();break;
+            }
+            clipboard->setText(text, QClipboard::Clipboard);
+            if (clipboard->supportsSelection()) {
+                clipboard->setText(text, QClipboard::Selection);
+            }
+            #if defined(Q_OS_LINUX)
+                QThread::msleep(1); //workaround for copied text not being available...
+            #endif
+            return;
+        }
+    }
+    for(auto i=tmp.begin();i!=tmp.end();++i){
+        for(int j=i->topRow();j<=i->bottomRow();j++){
+            for(int k=i->leftColumn();k<=i->rightColumn();k++){
+                switch(k){
+                case 0: text+=QString("ID \n");text+=row2dat[j]->id->text();text+='\n';break;
+                case 1: text+=QString("Source Language \n");text+=row2dat[j]->ori->text();text+='\n';break;
+                case 3: text+=QString("Target Language \n");text+=row2dat[j]->tar->text();text+='\n';break;
+                }
+            }
+        }
+    }
+    clipboard->setText(text, QClipboard::Clipboard);
+    if (clipboard->supportsSelection()) {
+        clipboard->setText(text, QClipboard::Selection);
+    }
+    #if defined(Q_OS_LINUX)
+        QThread::msleep(1); //workaround for copied text not being available...
+    #endif
+}
+

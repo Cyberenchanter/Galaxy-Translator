@@ -338,7 +338,7 @@ void MainWindow::export_project(iooptions &option){
     #endif
     QString path;
     for(int i=0;i<MAXLANGUAGE;i++){
-        if(option.lang_state[i]<=0||option.lang_state[i]>2)
+        if(option.lang_state[i]<=0||option.lang_state[i]>1)
             continue;
         path=option.dir+lang_code[i]+".SC2Data/LocalizedData/GameStrings.txt";
         QFile file(path);
@@ -350,12 +350,12 @@ void MainWindow::export_project(iooptions &option){
         }
         QTextStream out(&file);
         for(auto j=mymap.begin();j!=mymap.end();++j){
-            if(option.misc[0]){
-                if(j.key().startsWith("Abil"))
-                    continue;
-                if(j.key().startsWith("Effect"))
-                    continue;
-            }
+//            if(option.misc[0]){
+//                if(j.key().startsWith("Abil"))
+//                    continue;
+//                if(j.key().startsWith("Effect"))
+//                    continue;
+//            }
             out<<j.key()<<"="<<j.value().lang[i];
             Qt::endl(out);
         }
@@ -546,7 +546,7 @@ void MainWindow::on_maintable_cellDoubleClicked(int row, int column)
 void MainWindow::on_actionExport_Project_triggered()
 {
     savetable();
-    IODialog iodiag;
+    IODialog iodiag(this,true);
     iooptions options;
     if(iodiag.exec()==QDialog::Accepted){
         iodiag.getoptions(options);
@@ -560,6 +560,8 @@ void MainWindow::on_actionCopy_triggered()
     QClipboard* clipboard = QApplication::clipboard();
     QString text;
     auto tmp=ui->maintable->selectedRanges();
+    if(tmp.size()<=0)
+        return;
     if(tmp.size()==1){
         auto tmp2=tmp.begin();
         if(tmp2->topRow()==tmp2->bottomRow()&&tmp2->leftColumn()==tmp2->rightColumn()){

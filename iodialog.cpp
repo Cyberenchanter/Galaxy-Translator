@@ -2,7 +2,7 @@
 #include "mainwindow.h"
 #include "./ui_iodialog.h"
 
-IODialog::IODialog(QWidget *parent) :
+IODialog::IODialog(QWidget *parent,bool is_out) :
     QDialog(parent),
     ui(new Ui::IODialog)
 {
@@ -23,6 +23,15 @@ IODialog::IODialog(QWidget *parent) :
         combo[i]->setEnabled(false);
     }
     ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
+    if(is_out){
+        ui->misc->hide();
+        for(int i=0;i<MAXLANGUAGE;i++){
+            combo[i]->removeItem(1);
+        }
+        setWindowTitle(QString("Export to component folder"));
+    }else{
+        setWindowTitle(QString("Import from component folder"));
+    }
     updatedir();
 }
 
@@ -30,7 +39,6 @@ IODialog::~IODialog()
 {
     delete ui;
 }
-
 void IODialog::updatedir(){
     QFileInfo fileinfo = QFileInfo(QFileDialog::getOpenFileName(this, tr("Open File"),"",tr("ComponentList (*.SC2Components *.SC2Mod)")));
     if(fileinfo.suffix()=="SC2Components"){

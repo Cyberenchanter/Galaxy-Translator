@@ -14,7 +14,7 @@ class IODialog : public QDialog
 public slots:
     void getoptions(MainWindow::iooptions &options);
 public:
-    explicit IODialog(QWidget *parent = nullptr);
+    explicit IODialog(QWidget *parent = nullptr,bool is_out = false);
     ~IODialog();
 
 private slots:

@@ -54,6 +54,20 @@ private slots:
 
     void on_actionCopy_triggered();
 
+    void on_toolButton_search_clicked();
+
+    void on_checkBox_id_clicked();
+
+    void on_checkBox_ori_clicked();
+
+    void on_checkBox_tar_clicked();
+
+    void on_checkBox_nt_clicked();
+
+    void on_checkBox_tr_clicked();
+
+    void on_checkBox_pd_clicked();
+
 private:
     Ui::MainWindow *ui;
     void inittable();
@@ -70,7 +84,9 @@ private:
     void loadFile(const QString &fileName);
     void closeEvent(QCloseEvent *event);
     void SetComboBoxItemEnabled(QComboBox * comboBox, int index, bool enabled);
-
+    bool search_area[4]={1,1,0,1},search_stat[4]={0,1,1,1};
+    bool past_search_area[4]={1,1,0,1},past_search_stat[4]={0,1,1,1};
+    QString past_search_key;
     QString curFile;
     QString lang_code[MAXLANGUAGE]={"deDE","enUS","esES","esMX","frFR","itIT","koKR","plPL","ptBR","ruRU","zhCN","zhTW"};
     QString stat_code[4]={"Unknown","Needs Translation","Translated","Pending Deletion"};
@@ -83,8 +99,9 @@ private:
     };
     void preptableforupdate(bool is);
     void updatestat(mydata *dat);
-    void updaterow(mydata &dat,int row);
+    void updaterow(mydata *dat,int row);
+    void searchtable(const QString key);
     QMap<QString,mydata> mymap;
-    QList<mydata *> row2dat;
+    QList<mydata *> row2dat,search_res;
 };
 #endif // MAINWINDOW_H

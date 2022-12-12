@@ -23,12 +23,12 @@ MainWindow::MainWindow(QWidget *parent)
     //connect(ui->actionPaste, &QAction::triggered, ui->PlainEdit, &QPlainTextEdit::paste);
     //disconnect(ui->actionCut, &QAction::triggered, ui->PlainEdit, &QPlainTextEdit::cut);
     // toolbar
-    ui->toolButton_new->setIcon(QIcon(":/images/new.png"));
-    ui->toolButton_open->setIcon(QIcon(":/images/open.png"));
-    ui->toolButton_paste->setIcon(QIcon(":/images/paste.png"));
-    ui->toolButton_cut->setIcon(QIcon(":/images/cut.png"));
-    ui->toolButton_save->setIcon(QIcon(":/images/save.png"));
-    ui->toolButton_copy->setIcon(QIcon(":/images/copy.png"));
+    //ui->toolButton_new->setIcon(QIcon(":/images/new.png"));
+    //ui->toolButton_open->setIcon(QIcon(":/images/open.png"));
+    //ui->toolButton_paste->setIcon(QIcon(":/images/paste.png"));
+    //ui->toolButton_cut->setIcon(QIcon(":/images/cut.png"));
+    //ui->toolButton_save->setIcon(QIcon(":/images/save.png"));
+    //ui->toolButton_copy->setIcon(QIcon(":/images/copy.png"));
     for(int i=0;i<MAXLANGUAGE;i++){
         ui->lang_ori_select->addItem(lang_code[i]);
         ui->lang_tar_select->addItem(lang_code[i]);
@@ -187,7 +187,7 @@ void MainWindow::loadFile(const QString &fileName)
             i.value().tar = new QTableWidgetItem(i.value().lang[lang_tar]);
             i.value().stat_display = new QTableWidgetItem();
             i.value().stat_display->setFlags(i.value().stat_display->flags() & (~Qt::ItemIsEditable));
-            updaterow(i.value(),index);
+            updaterow(&i.value(),index);
             index++;
         }else{
             i.value().ori->setText(i.value().lang[lang_ori]);
@@ -253,15 +253,15 @@ void MainWindow::closeEvent(QCloseEvent *event)
         event->ignore();
     }
 }
-void MainWindow::updaterow(mydata &dat,int row){
-    ui->maintable->setItem(row,0,dat.id);
-    ui->maintable->setItem(row,1,dat.ori);
-    ui->maintable->setItem(row,2,dat.stat_display);
-    ui->maintable->setItem(row,3,dat.tar);
+void MainWindow::updaterow(mydata *dat,int row){
+    ui->maintable->setItem(row,0,dat->id);
+    ui->maintable->setItem(row,1,dat->ori);
+    ui->maintable->setItem(row,2,dat->stat_display);
+    ui->maintable->setItem(row,3,dat->tar);
     if(row>=row2dat.size()){
-        row2dat.push_back(&dat);
+        row2dat.push_back(dat);
     }else{
-        row2dat[row]=&dat;
+        row2dat[row]=dat;
     }
 }
 void MainWindow::import_gamestring(const QString &filename,int lang_index,iooptions &opt){
@@ -319,7 +319,7 @@ void MainWindow::import_project(iooptions &option){
             i.value().tar = new QTableWidgetItem(i.value().lang[lang_tar]);
             i.value().stat_display = new QTableWidgetItem();
             i.value().stat_display->setFlags(i.value().stat_display->flags() & (~Qt::ItemIsEditable) & (~Qt::ItemIsSelectable));
-            updaterow(i.value(),index);
+            updaterow(&i.value(),index);
             index++;
         }else{
             i.value().ori->setText(i.value().lang[lang_ori]);
@@ -372,6 +372,51 @@ void MainWindow::savetable()
         i.value().lang[lang_ori]=i.value().ori->text();
         i.value().lang[lang_tar]=i.value().tar->text();
     }
+}
+
+void MainWindow::searchtable(const QString key){
+    preptableforupdate(true);
+    bool fullsearch=key.isEmpty();
+    //savetable();
+    for(int i=0;i<ui->maintable->rowCount();i++){
+        for(int j=0;j<4;j++){
+            ui->maintable->takeItem(i,j);
+        }
+    }
+    //ui->maintable->setRowCount(0);
+    search_res.clear();
+    row2dat.clear();
+    for(auto i=mymap.begin();i!=mymap.end();++i){
+        if(search_stat[i.value().stat]){
+            if(fullsearch){
+                search_res.push_back(&i.value());
+            }else{
+                if(search_area[0]){
+                    if(i.key().contains(key)){
+                        search_res.push_back(&i.value());
+                        continue;
+                    }
+                }
+                if(search_area[1]){
+                    if(i.value().ori->text().contains(key)){
+                        search_res.push_back(&i.value());
+                        continue;
+                    }
+                }
+                if(search_area[3]){
+                    if(i.value().tar->text().contains(key)){
+                        search_res.push_back(&i.value());
+                    }
+                }
+            }
+        }
+    }
+    int cnt=search_res.size();
+    ui->maintable->setRowCount(cnt);
+    for(int j=0;j<cnt;j++){
+        updaterow(search_res[j],j);
+    }
+    preptableforupdate(false);
 }
 void MainWindow::preptableforupdate(bool is)
 {
@@ -598,5 +643,70 @@ void MainWindow::on_actionCopy_triggered()
     #if defined(Q_OS_LINUX)
         QThread::msleep(1); //workaround for copied text not being available...
     #endif
+}
+
+
+void MainWindow::on_toolButton_search_clicked()
+{
+    bool chk1=true,chk2=true;
+    for(int i=0;i<4;i++){
+        if(past_search_area[i]!=search_area[i]){
+            chk1=false;
+        }
+        if(past_search_stat[i]!=search_stat[i]){
+            chk2=false;
+            break;
+        }
+    }
+    if(ui->searchboxtext->toPlainText()==past_search_key&&chk2&&(chk1||past_search_key.isEmpty()))
+        return;
+    #ifndef QT_NO_CURSOR
+        QGuiApplication::setOverrideCursor(Qt::WaitCursor);
+    #endif
+    past_search_key=ui->searchboxtext->toPlainText();
+    for(int i=0;i<4;i++){
+        past_search_area[i]=search_area[i];
+        past_search_stat[i]=search_stat[i];
+    }
+    searchtable(past_search_key);
+    #ifndef QT_NO_CURSOR
+        QGuiApplication::restoreOverrideCursor();
+    #endif
+}
+
+
+void MainWindow::on_checkBox_id_clicked()
+{
+    search_area[0]=!search_area[0];
+}
+
+
+void MainWindow::on_checkBox_ori_clicked()
+{
+    search_area[1]=!search_area[1];
+}
+
+
+void MainWindow::on_checkBox_tar_clicked()
+{
+    search_area[3]=!search_area[3];
+}
+
+
+void MainWindow::on_checkBox_nt_clicked()
+{
+    search_stat[1]=!search_stat[1];
+}
+
+
+void MainWindow::on_checkBox_tr_clicked()
+{
+    search_stat[2]=!search_stat[2];
+}
+
+
+void MainWindow::on_checkBox_pd_clicked()
+{
+    search_stat[3]=!search_stat[3];
 }
 

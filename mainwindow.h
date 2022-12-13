@@ -91,12 +91,21 @@ private:
     QString lang_code[MAXLANGUAGE]={"deDE","enUS","esES","esMX","frFR","itIT","koKR","plPL","ptBR","ruRU","zhCN","zhTW"};
     QString stat_code[4]={"Unknown","Needs Translation","Translated","Pending Deletion"};
     int rowcount,lang_ori=-1,lang_tar=-1;
+    struct interlink{
+        int type;
+        QString id;
+    };
     struct mydata{
         qint64 version[MAXLANGUAGE]={};
         QString lang[MAXLANGUAGE];
         int stat=0;
         QTableWidgetItem *id=nullptr,*stat_display=nullptr,*ori=nullptr,*tar=nullptr;
+        QList<interlink> *interl=nullptr;
     };
+    QString validatetogetrealid(const QString &fullstring,const QString &prefix);
+    QString getkeyfromxml(QString &fullstring,const QString pattern);
+    void setup_connection(const QString &a,const QString &b,const int type);
+    void parsegamedata(const QString &dir);
     void preptableforupdate(bool is);
     void updatestat(mydata *dat);
     void updaterow(mydata *dat,int row);

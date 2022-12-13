@@ -155,7 +155,7 @@ void MainWindow::setCurrentFile(const QString &fileName)
 
     QString shownName = curFile;
     if (curFile.isEmpty())
-        shownName = "untitled.txt";
+        shownName = "untitled";
     setWindowFilePath(shownName);
 }
 
@@ -220,6 +220,12 @@ bool MainWindow::saveFile(const QString &fileName)
                     out<<"{"<<i.value().lang[j-1]<<"}";
                 if(j>MAXLANGUAGE&&j<=MAXLANGUAGE*2){
                     out<<"{"<<i.value().version[j-1-MAXLANGUAGE]<<"}";
+                }
+            }
+            if(i.value().interl!=nullptr){
+                for(int j=0,l=i.value().interl->size();j<l;j++){
+                    out<<"{"<<i.value().interl->at(j).type<<"}";
+                    out<<"{"<<i.value().interl->at(j).id<<"}";
                 }
             }
             Qt::endl(out);
@@ -300,6 +306,193 @@ void MainWindow::import_gamestring(const QString &filename,int lang_index,ioopti
         }
     }
 }
+QString MainWindow::validatetogetrealid(const QString &fullstring,const QString &prefix){
+    if(fullstring.length()<=prefix.length())
+        return QString();
+    int len=prefix.length();
+    for(int i=0;i<len;i++){
+        if(fullstring[i]!=prefix[i])
+            return QString();
+    }
+    return fullstring.right(fullstring.length()-len);
+}
+QString MainWindow::getkeyfromxml(QString &fullstring,const QString pattern){
+    int index=fullstring.indexOf(pattern);
+    if(index<0)
+        return QString();
+    index+=pattern.length()+1;
+    int index2=index,len=fullstring.length();
+    while(index2<len&&fullstring[index2]!='\"')
+        index2++;
+    if(index2>index)
+        return fullstring.sliced(index,index2-index);
+    return QString();
+}
+void MainWindow::setup_connection(const QString &a,const QString &b,const int type){
+    if(mymap[a].interl==nullptr)
+        mymap[a].interl= new QList<interlink>;
+    if(mymap[b].interl==nullptr)
+        mymap[b].interl= new QList<interlink>;
+    mymap[a].interl->push_back(interlink{type,b});
+    mymap[b].interl->push_back(interlink{-type,a});
+}
+void MainWindow::parsegamedata(const QString &dir){
+    //behavior and button interal name-tooltip connection
+    QString buf;
+    for(auto i=mymap.begin();i!=mymap.end();++i){
+        buf=validatetogetrealid(i.key(),"Behavior/Name/");
+        if(buf!=QString()&&mymap.contains("Behavior/Tooltip/"+buf)){
+            setup_connection(i.key(),"Behavior/Tooltip/"+buf,1);
+            continue;
+        }
+        buf=validatetogetrealid(i.key(),"Button/Name/");
+        if(buf!=QString()&&mymap.contains("Button/Tooltip/"+buf)){
+            setup_connection(i.key(),"Button/Tooltip/"+buf,2);
+            continue;
+        }
+    }
+    //fetch button unit(train) connection from abildata
+    QFile file(dir+"Base.SC2Data/GameData/AbilData.xml");
+    if (file.open(QFile::ReadOnly | QFile::Text)) {
+        QTextStream in(&file);
+        QString buf,unit,button;
+        int flag=0;
+        while (in.readLineInto(&buf)){
+            buf=buf.simplified();
+            if(buf.startsWith("</CAbil")){
+                flag=0;
+                continue;
+            }
+            if(flag<0)
+                continue;
+            if(buf.startsWith("<CAbil")){
+                if(buf.startsWith("<CAbilWarpTrain")||buf.startsWith("<CAbilBuild"))
+                    flag=1;
+                else{
+                    if(buf.startsWith("<CAbilTrain"))
+                        flag=2;
+                    else{
+                        if(buf.startsWith("<CAbilResearch"))
+                            flag=5;
+                        else
+                            flag=-1;
+                    }
+                }
+                continue;
+            }
+            if(flag==1){
+                if(buf.startsWith("<InfoArray")){
+                    flag=3;
+                    //unit.clear();
+                    button.clear();
+                    unit=getkeyfromxml(buf,"Unit=");
+                }
+                continue;
+            }
+            if(flag==3){
+                if(buf.startsWith("<Button")){
+                    button=getkeyfromxml(buf,"DefaultButtonFace=");
+                }
+                else{
+                    if(buf.startsWith("</InfoArray")){
+                        flag=1;
+                        if(!unit.isEmpty()&&!button.isEmpty())
+                            if(mymap.contains("Unit/Name/"+unit)&&mymap.contains("Button/Name/"+button))
+                                setup_connection("Button/Name/"+button,"Unit/Name/"+unit,3);
+                    }
+                }
+                continue;
+            }
+            if(flag==2){
+                if(buf.startsWith("<InfoArray")){
+                    flag=4;
+                    unit.clear();
+                    button.clear();
+                }
+                continue;
+            }
+            if(flag==4){
+                if(buf.startsWith("<Button")){
+                    button=getkeyfromxml(buf,"DefaultButtonFace=");
+                }else{
+                    if(buf.startsWith("<Unit")){
+                        unit=getkeyfromxml(buf,"value=");
+                    }else{
+                        if(buf.startsWith("</InfoArray")){
+                            flag=2;
+                            if(!unit.isEmpty()&&!button.isEmpty())
+                                if(mymap.contains("Unit/Name/"+unit)&&mymap.contains("Button/Name/"+button))
+                                    setup_connection("Button/Name/"+button,"Unit/Name/"+unit,3);
+                        }
+                    }
+                }
+                continue;
+            }
+            if(flag==5){
+                if(buf.startsWith("<InfoArray")){
+                    flag=6;
+                    //unit.clear();
+                    button.clear();
+                    unit=getkeyfromxml(buf,"Upgrade=");
+                }
+                continue;
+            }
+            if(flag==6){
+                if(buf.startsWith("<Button")){
+                    button=getkeyfromxml(buf,"DefaultButtonFace=");
+                }
+                else{
+                    if(buf.startsWith("</InfoArray")){
+                        flag=5;
+                        if(!unit.isEmpty()&&!button.isEmpty())
+                            if(mymap.contains("Upgrade/Name/"+unit)&&mymap.contains("Button/Name/"+button))
+                                setup_connection("Button/Name/"+button,"Upgrade/Name/"+unit,4);
+                    }
+                }
+                continue;
+            }
+        }
+    }
+    //fetch unit related datas
+    file.close();
+    file.setFileName(dir+"Base.SC2Data/GameData/UnitData.xml");
+    if (file.open(QFile::ReadOnly | QFile::Text)) {
+        QTextStream in(&file);
+        QString buf,unit,button;
+        while (in.readLineInto(&buf)){
+            buf=buf.simplified();
+            button.clear();
+            if(buf.startsWith("</CUnit")){
+                unit.clear();
+                continue;
+            }
+            if(buf.startsWith("<CUnit")){
+                unit=getkeyfromxml(buf,"id=");
+                continue;
+            }
+            if(buf.startsWith("<BehaviorArray")){
+                button=getkeyfromxml(buf,"Link=");
+                if(mymap.contains("Unit/Name/"+unit)&&mymap.contains("Behavior/Name/"+button))
+                    setup_connection("Unit/Name/"+unit,"Behavior/Name/"+button,5);
+                continue;
+            }
+            if(buf.startsWith("<LayoutButtons")){
+                button=getkeyfromxml(buf,"Face=");
+                if(mymap.contains("Unit/Name/"+unit)&&mymap.contains("Button/Name/"+button))
+                    setup_connection("Unit/Name/"+unit,"Button/Name/"+button,6);
+                continue;
+            }
+            if(buf.startsWith("<WeaponArray")){
+                button=getkeyfromxml(buf,"Link=");
+                if(mymap.contains("Unit/Name/"+unit)&&mymap.contains("Weapon/Name/"+button))
+                    setup_connection("Unit/Name/"+unit,"Weapon/Name/"+button,7);
+                continue;
+            }
+        }
+    }
+    file.close();
+}
+
 void MainWindow::import_project(iooptions &option){
     #ifndef QT_NO_CURSOR
         QGuiApplication::setOverrideCursor(Qt::WaitCursor);
@@ -309,6 +502,8 @@ void MainWindow::import_project(iooptions &option){
         path=option.dir+lang_code[i]+".SC2Data/LocalizedData/GameStrings.txt";
         import_gamestring(path,i,option);
     }
+    if(option.misc[1])
+        parsegamedata(option.dir);
     int index=ui->maintable->rowCount();
     for(auto i=mymap.begin();i!=mymap.end();++i){
         if(i.value().id==nullptr){

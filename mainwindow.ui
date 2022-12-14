@@ -99,6 +99,9 @@
       <height>61</height>
      </rect>
     </property>
+    <property name="toolTip">
+     <string>Import from component folder</string>
+    </property>
     <property name="text">
      <string>...</string>
     </property>
@@ -111,6 +114,9 @@
       <width>26</width>
       <height>61</height>
      </rect>
+    </property>
+    <property name="toolTip">
+     <string>Export to component folder</string>
     </property>
     <property name="text">
      <string>...</string>
@@ -125,6 +131,9 @@
       <height>61</height>
      </rect>
     </property>
+    <property name="toolTip">
+     <string>Open file</string>
+    </property>
     <property name="text">
      <string>...</string>
     </property>
@@ -137,6 +146,9 @@
       <width>26</width>
       <height>61</height>
      </rect>
+    </property>
+    <property name="toolTip">
+     <string>Save file</string>
     </property>
     <property name="text">
      <string>...</string>
@@ -151,6 +163,9 @@
       <height>61</height>
      </rect>
     </property>
+    <property name="toolTip">
+     <string>Copy source language(s) to target</string>
+    </property>
     <property name="text">
      <string>...</string>
     </property>
@@ -163,6 +178,9 @@
       <width>26</width>
       <height>61</height>
      </rect>
+    </property>
+    <property name="toolTip">
+     <string>Approve target translation(s)</string>
     </property>
     <property name="text">
      <string>...</string>

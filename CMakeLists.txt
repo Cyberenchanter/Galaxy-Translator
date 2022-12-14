@@ -69,6 +69,7 @@ set(Galaxy-Translator_resource_files
     "images/save.png"
     "images/approve.png"
     "images/search.png"
+    "images/folder.png"
 )
 qt_add_resources(Galaxy-Translator "Galaxy-Translator"
     PREFIX

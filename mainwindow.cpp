@@ -73,7 +73,7 @@ void MainWindow::SetComboBoxItemEnabled(QComboBox * comboBox, int index, bool en
 
 bool MainWindow::maybeSave()
 {
-    if (!ui->maintable->isWindowModified())
+    if (!isWindowModified())
         return true;
     const QMessageBox::StandardButton ret
         = QMessageBox::warning(this, tr("Application"),
@@ -168,10 +168,10 @@ void MainWindow::setCurrentFile(const QString &fileName)
 {
     curFile = fileName;
     setWindowModified(false);
-
     QString shownName = curFile;
     if (curFile.isEmpty())
         shownName = "untitled";
+    setWindowTitle(QString());
     setWindowFilePath(shownName);
 }
 
@@ -641,28 +641,25 @@ void MainWindow::preptableforupdate(bool is)
 }
 void MainWindow::on_actionNew_File_triggered()
 {
-//    if(maybeSave()){
-//        ui->maintable->blockSignals(true);
-//        QFileInfo fileinfo = QFileInfo(QFileDialog::getOpenFileName(this, tr("Open File"),"",tr("ComponentList (*.SC2Components *.SC2Mod)")));
-//        if(fileinfo.suffix()=="SC2Components"){
-//            dir=fileinfo.absolutePath();
-//        }else{
-//            if(fileinfo.suffix()=="SC2Mod"){
-//                dir=fileinfo.absoluteFilePath();
-//            }
-//        }
-//        dir+="/";
-//        import_project();
-//        ui->maintable->blockSignals(false);
-//    }
-    IODialog iodiag;
-    iooptions options;
-    if(iodiag.exec()==QDialog::Accepted){
-        preptableforupdate(true);
-        iodiag.getoptions(options);
-        import_project(options);
-        preptableforupdate(false);
+    if(maybeSave()){
+        IODialog iodiag;
+        iooptions options;
+        if(iodiag.exec()==QDialog::Accepted){
+            preptableforupdate(true);
+            //ui->maintable->clearContents();
+            ui->maintable->setRowCount(0);
+            ui->relevant_strings->clear();
+            mymap.clear();
+            row2dat.clear();
+            rowcount=0;
+            iodiag.getoptions(options);
+            import_project(options);
+            setWindowTitle(options.dir);
+            setWindowModified(false);
+            preptableforupdate(false);
+        }
     }
+
 }
 
 
@@ -670,11 +667,18 @@ void MainWindow::on_actionNew_File_triggered()
 void MainWindow::on_actionOpen_triggered()
 {
     if (maybeSave()) {
-        preptableforupdate(true);
         QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"),"",tr("Galaxy Translator Project (*.galaxytrans)"));
-        if (!fileName.isEmpty())
+        if (!fileName.isEmpty()){
+            preptableforupdate(true);
+            ui->maintable->setRowCount(0);
+            ui->relevant_strings->clear();
+            mymap.clear();
+            row2dat.clear();
+            rowcount=0;
             loadFile(fileName);
-        preptableforupdate(false);
+            setCurrentFile(fileName);
+            preptableforupdate(false);
+        }
     }
 }
 
@@ -747,6 +751,7 @@ void MainWindow::on_maintable_cellChanged(int row, int column)
         row2dat[row]->version[lang_ori]++;
         updatestat(row2dat[row]);
     }
+    setWindowModified(true);
 }
 
 void MainWindow::on_actionApprove_triggered()
@@ -759,6 +764,7 @@ void MainWindow::on_actionApprove_triggered()
             k=row2dat[j];
             if(k->stat==1){
                 k->version[lang_tar]=k->version[lang_ori];
+                setWindowModified(true);
                 updatestat(k);
             }else{
                 if(k->stat==3){
@@ -968,7 +974,7 @@ void MainWindow::on_relevant_strings_itemDoubleClicked(QTreeWidgetItem *item, in
 
 void MainWindow::on_actionCopy_source_to_target_triggered()
 {
-    preptableforupdate(true);
+    //preptableforupdate(true);
     auto tmp=ui->maintable->selectedRanges();
     mydata *k;
     for(auto i=tmp.begin();i!=tmp.end();++i){
@@ -977,6 +983,6 @@ void MainWindow::on_actionCopy_source_to_target_triggered()
             k->tar->setText(k->ori->text());
         }
     }
-    preptableforupdate(false);
+    //preptableforupdate(false);
 }
 

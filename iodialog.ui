@@ -67,10 +67,6 @@
    <property name="text">
     <string/>
    </property>
-   <property name="icon">
-    <iconset>
-     <normaloff>images/open.png</normaloff>images/open.png</iconset>
-   </property>
   </widget>
   <widget class="QGroupBox" name="lang">
    <property name="geometry">
@@ -104,12 +100,12 @@
       </item>
       <item>
        <property name="text">
-        <string>Safe Update</string>
+        <string>New Item Only</string>
        </property>
       </item>
       <item>
        <property name="text">
-        <string>Update All</string>
+        <string>Fully Trust and Update</string>
        </property>
       </item>
      </widget>
@@ -135,7 +131,7 @@
       </item>
       <item>
        <property name="text">
-        <string>Update All</string>
+        <string>Fully Trust and Update</string>
        </property>
       </item>
      </widget>
@@ -161,7 +157,7 @@
       </item>
       <item>
        <property name="text">
-        <string>Update All</string>
+        <string>Fully Trust and Update</string>
        </property>
       </item>
      </widget>
@@ -187,7 +183,7 @@
       </item>
       <item>
        <property name="text">
-        <string>Update All</string>
+        <string>Fully Trust and Update</string>
        </property>
       </item>
      </widget>
@@ -213,7 +209,7 @@
       </item>
       <item>
        <property name="text">
-        <string>Update All</string>
+        <string>Fully Trust and Update</string>
        </property>
       </item>
      </widget>
@@ -239,7 +235,7 @@
       </item>
       <item>
        <property name="text">
-        <string>Update All</string>
+        <string>Fully Trust and Update</string>
        </property>
       </item>
      </widget>
@@ -265,7 +261,7 @@
       </item>
       <item>
        <property name="text">
-        <string>Update All</string>
+        <string>Fully Trust and Update</string>
        </property>
       </item>
      </widget>
@@ -291,7 +287,7 @@
       </item>
       <item>
        <property name="text">
-        <string>Update All</string>
+        <string>Fully Trust and Update</string>
        </property>
       </item>
      </widget>
@@ -317,7 +313,7 @@
       </item>
       <item>
        <property name="text">
-        <string>Update All</string>
+        <string>Fully Trust and Update</string>
        </property>
       </item>
      </widget>
@@ -343,7 +339,7 @@
       </item>
       <item>
        <property name="text">
-        <string>Update All</string>
+        <string>Fully Trust and Update</string>
        </property>
       </item>
      </widget>
@@ -369,7 +365,7 @@
       </item>
       <item>
        <property name="text">
-        <string>Update All</string>
+        <string>Fully Trust and Update</string>
        </property>
       </item>
      </widget>
@@ -395,7 +391,7 @@
       </item>
       <item>
        <property name="text">
-        <string>Update All</string>
+        <string>Fully Trust and Update</string>
        </property>
       </item>
      </widget>

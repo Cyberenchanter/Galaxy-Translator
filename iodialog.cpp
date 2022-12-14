@@ -7,6 +7,7 @@ IODialog::IODialog(QWidget *parent,bool is_out) :
     ui(new Ui::IODialog)
 {
     ui->setupUi(this);
+    ui->comp_select->setIcon(QIcon(":/images/folder.png"));
     combo[0]=ui->combo_de;
     combo[1]=ui->combo_en;
     combo[2]=ui->combo_es;

@@ -777,7 +777,7 @@ void MainWindow::on_maintable_cellDoubleClicked(int row, int column)
 {
     if(column!=1&&column!=3)
         return;
-    int h=0,w=ui->maintable->columnWidth(column);
+    /*int h=0,w=ui->maintable->columnWidth(column);
     QTableWidgetItem *item;
     QLabel tem;
     tem.setMaximumWidth(w);
@@ -795,7 +795,9 @@ void MainWindow::on_maintable_cellDoubleClicked(int row, int column)
     h+=30;
     if(h<=ui->maintable->rowHeight(row))
         return;
-    ui->maintable->setRowHeight(row,h);
+    ui->maintable->setRowHeight(row,h);*/
+    ui->maintable->resizeRowToContents(row);
+    ui->maintable->setRowHeight(row,ui->maintable->rowHeight(row)+10);
 }
 
 

@@ -300,15 +300,20 @@
      </property>
     </widget>
    </widget>
-   <widget class="QTreeView" name="treeView">
+   <widget class="QTreeWidget" name="relevant_strings">
     <property name="geometry">
      <rect>
       <x>800</x>
-      <y>110</y>
+      <y>90</y>
       <width>221</width>
-      <height>601</height>
+      <height>621</height>
      </rect>
     </property>
+    <column>
+     <property name="text">
+      <string>Relevant Strings</string>
+     </property>
+    </column>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -317,7 +322,7 @@
      <x>0</x>
      <y>0</y>
      <width>1024</width>
-     <height>22</height>
+     <height>37</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">

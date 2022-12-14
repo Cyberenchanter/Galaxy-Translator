@@ -919,3 +919,45 @@ void MainWindow::on_checkBox_pd_clicked()
     search_stat[3]=!search_stat[3];
 }
 
+
+void MainWindow::on_maintable_itemSelectionChanged()
+{
+    ui->relevant_strings->clear();
+    auto list=ui->maintable->selectedRanges();
+    int row=list[0].topRow();
+    for(int i=0,len=list.size();i<len;i++){
+        if(list[i].topRow()!=row||list[i].bottomRow()!=row)
+            return;
+    }
+    if(row2dat[row]->interl==nullptr)
+        return;
+    auto link=row2dat[row]->interl;
+    QModelIndex stat2index[2][MAXLINKSTAT+1];
+    int rstat;
+    bool is_negative;
+    //memset(stat2index,-1,sizeof(stat2index));
+    for(int i=0,len=link->size();i<len;i++){
+        is_negative=link->at(i).type<0;
+        rstat=abs(link->at(i).type);
+        if(!stat2index[is_negative][rstat].isValid()){
+            QTreeWidgetItem *topitem=new QTreeWidgetItem;
+            topitem->setText(0,link_stat[is_negative][rstat]);
+            ui->relevant_strings->addTopLevelItem(topitem);
+            stat2index[is_negative][rstat]=ui->relevant_strings->indexFromItem(topitem,0);
+        }
+        QTreeWidgetItem *item=new QTreeWidgetItem;
+        item->setText(0,mymap[link->at(i).id].ori->text());
+        item->setToolTip(0,link->at(i).id);
+        ui->relevant_strings->itemFromIndex(stat2index[is_negative][rstat])->addChild(item);
+    }
+}
+
+
+void MainWindow::on_relevant_strings_itemDoubleClicked(QTreeWidgetItem *item, int column)
+{
+    QString key=item->toolTip(0);
+    if(!key.isEmpty()&&mymap.contains(key)){
+        ui->maintable->selectRow(mymap[key].id->row());
+    }
+}
+

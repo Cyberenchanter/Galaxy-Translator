@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #define MAXLANGUAGE 12
+#define MAXLINKSTAT 7
 #include <QMainWindow>
 #include <QtWidgets>
 
@@ -68,6 +69,10 @@ private slots:
 
     void on_checkBox_pd_clicked();
 
+    void on_maintable_itemSelectionChanged();
+
+    void on_relevant_strings_itemDoubleClicked(QTreeWidgetItem *item, int column);
+
 private:
     Ui::MainWindow *ui;
     void inittable();
@@ -90,6 +95,7 @@ private:
     QString curFile;
     QString lang_code[MAXLANGUAGE]={"deDE","enUS","esES","esMX","frFR","itIT","koKR","plPL","ptBR","ruRU","zhCN","zhTW"};
     QString stat_code[4]={"Unknown","Needs Translation","Translated","Pending Deletion"};
+    QString link_stat[2][MAXLINKSTAT+1]={"","Behavior Tooltip","Button Tooltip","Unit Built","Upgrade Researched","Behavior on Unit","Button on Unit","Weapon on Unit","","Behavior Name","Button Name","Button that Builds Unit","Button that Researches Upgrade","Unit Having this Behavior","Unit Having this Button","Unit Having this Weapon"};
     int rowcount,lang_ori=-1,lang_tar=-1;
     struct interlink{
         int type;

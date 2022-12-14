@@ -49,6 +49,7 @@ MainWindow::MainWindow(QWidget *parent)
     //ui->maintable->setItemDelegateForColumn(0,deleagater);
     ui->maintable->setItemDelegateForColumn(1,deleagater);
     ui->maintable->setItemDelegateForColumn(3,deleagater);
+    ui->maintable->setWordWrap(true);
 }
 
 MainWindow::~MainWindow()

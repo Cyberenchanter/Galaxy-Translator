@@ -120,13 +120,26 @@ void MainWindow::parsefile(const QString &buf)
     bool stat=0;
     qint64 len=buf.length(),index=0;
     QString version,id;
+    QList<interlink> *interl=nullptr;
+    interlink tem;
     for(qint64 i=0;i<len;i++){
         if(buf[i]=='}'){
             stat=!stat;
             if(index>MAXLANGUAGE&&index<=MAXLANGUAGE*2){
                 ans.version[index-MAXLANGUAGE-1]=version.toLongLong();
                 version.clear();
-            }
+            }else
+                if(index>MAXLANGUAGE*2){
+                    if(interl==nullptr)
+                        interl=new QList<interlink>;
+                    if(index%2)
+                        tem.type=version.toInt();
+                    else{
+                        tem.id=version;
+                        interl->push_back(tem);
+                    }
+                    version.clear();
+                }
             index++;
         }
         if(stat){
@@ -134,7 +147,7 @@ void MainWindow::parsefile(const QString &buf)
                 id+=buf[i];
             if(index>0&&index<=MAXLANGUAGE)
                 ans.lang[index-1]+=buf[i];
-            if(index>MAXLANGUAGE&&index<=MAXLANGUAGE*2){
+            if(index>MAXLANGUAGE){
                 version+=buf[i];
             }
 
@@ -145,6 +158,7 @@ void MainWindow::parsefile(const QString &buf)
     }
     if(id.isEmpty())
         return;
+    ans.interl=interl;
     mymap.insert(id,ans);
 }
 

@@ -201,17 +201,17 @@
     <widget class="QPlainTextEdit" name="searchboxtext">
      <property name="geometry">
       <rect>
-       <x>0</x>
+       <x>2</x>
        <y>20</y>
-       <width>231</width>
-       <height>61</height>
+       <width>261</width>
+       <height>59</height>
       </rect>
      </property>
     </widget>
     <widget class="QCheckBox" name="checkBox_id">
      <property name="geometry">
       <rect>
-       <x>240</x>
+       <x>270</x>
        <y>20</y>
        <width>81</width>
        <height>20</height>
@@ -227,7 +227,7 @@
     <widget class="QCheckBox" name="checkBox_ori">
      <property name="geometry">
       <rect>
-       <x>240</x>
+       <x>270</x>
        <y>40</y>
        <width>81</width>
        <height>20</height>
@@ -243,7 +243,7 @@
     <widget class="QCheckBox" name="checkBox_tar">
      <property name="geometry">
       <rect>
-       <x>240</x>
+       <x>270</x>
        <y>60</y>
        <width>81</width>
        <height>20</height>
@@ -259,7 +259,7 @@
     <widget class="QCheckBox" name="checkBox_nt">
      <property name="geometry">
       <rect>
-       <x>320</x>
+       <x>355</x>
        <y>20</y>
        <width>131</width>
        <height>20</height>
@@ -275,7 +275,7 @@
     <widget class="QCheckBox" name="checkBox_tr">
      <property name="geometry">
       <rect>
-       <x>320</x>
+       <x>355</x>
        <y>40</y>
        <width>121</width>
        <height>20</height>
@@ -291,7 +291,7 @@
     <widget class="QCheckBox" name="checkBox_pd">
      <property name="geometry">
       <rect>
-       <x>320</x>
+       <x>355</x>
        <y>60</y>
        <width>131</width>
        <height>20</height>
@@ -307,9 +307,9 @@
     <widget class="QToolButton" name="toolButton_search">
      <property name="geometry">
       <rect>
-       <x>480</x>
+       <x>487</x>
        <y>20</y>
-       <width>61</width>
+       <width>52</width>
        <height>61</height>
       </rect>
      </property>

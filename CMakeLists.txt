@@ -63,11 +63,12 @@ install(TARGETS Galaxy-Translator
 
 set(Galaxy-Translator_resource_files
     "images/copy.png"
-    "images/cut.png"
-    "images/new.png"
+    "images/import.png"
+    "images/export.png"
     "images/open.png"
-    "images/paste.png"
     "images/save.png"
+    "images/approve.png"
+    "images/search.png"
 )
 qt_add_resources(Galaxy-Translator "Galaxy-Translator"
     PREFIX

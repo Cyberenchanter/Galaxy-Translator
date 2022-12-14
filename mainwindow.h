@@ -73,6 +73,8 @@ private slots:
 
     void on_relevant_strings_itemDoubleClicked(QTreeWidgetItem *item, int column);
 
+    void on_actionCopy_source_to_target_triggered();
+
 private:
     Ui::MainWindow *ui;
     void inittable();

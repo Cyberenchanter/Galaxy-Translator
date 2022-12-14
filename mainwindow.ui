@@ -346,12 +346,14 @@
     <addaction name="actionPaste"/>
     <addaction name="separator"/>
     <addaction name="actionApprove"/>
+    <addaction name="actionCopy_source_to_target"/>
    </widget>
    <widget class="QMenu" name="menu_About">
     <property name="title">
      <string>&amp;About</string>
     </property>
-    <addaction name="actionNope"/>
+    <addaction name="actionversion"/>
+    <addaction name="actionMade_with_love_by_Cyberenchanter"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Edit"/>
@@ -398,9 +400,15 @@
     <string>Paste</string>
    </property>
   </action>
-  <action name="actionNope">
+  <action name="actionversion">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
-    <string>Nope</string>
+    <string>V1.0</string>
    </property>
   </action>
   <action name="actionApprove">
@@ -411,6 +419,22 @@
   <action name="actionExport_Project">
    <property name="text">
     <string>Export Project</string>
+   </property>
+  </action>
+  <action name="actionMade_with_love_by_Cyberenchanter">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Made with love by Cyberenchanter</string>
+   </property>
+  </action>
+  <action name="actionCopy_source_to_target">
+   <property name="text">
+    <string>Copy Source Language(s) to Target</string>
+   </property>
+   <property name="toolTip">
+    <string>Copy Source Language(s) to Target</string>
    </property>
   </action>
  </widget>
@@ -435,7 +459,7 @@
   <connection>
    <sender>toolButton_copy</sender>
    <signal>clicked()</signal>
-   <receiver>actionCopy</receiver>
+   <receiver>actionCopy_source_to_target</receiver>
    <slot>trigger()</slot>
    <hints>
     <hint type="sourcelabel">

@@ -23,12 +23,13 @@ MainWindow::MainWindow(QWidget *parent)
     //connect(ui->actionPaste, &QAction::triggered, ui->PlainEdit, &QPlainTextEdit::paste);
     //disconnect(ui->actionCut, &QAction::triggered, ui->PlainEdit, &QPlainTextEdit::cut);
     // toolbar
-    //ui->toolButton_new->setIcon(QIcon(":/images/new.png"));
-    //ui->toolButton_open->setIcon(QIcon(":/images/open.png"));
-    //ui->toolButton_paste->setIcon(QIcon(":/images/paste.png"));
-    //ui->toolButton_cut->setIcon(QIcon(":/images/cut.png"));
-    //ui->toolButton_save->setIcon(QIcon(":/images/save.png"));
-    //ui->toolButton_copy->setIcon(QIcon(":/images/copy.png"));
+    ui->toolButton_import->setIcon(QIcon(":/images/import.png"));
+    ui->toolButton_export->setIcon(QIcon(":/images/export.png"));
+    ui->toolButton_open->setIcon(QIcon(":/images/open.png"));
+    ui->toolButton_save->setIcon(QIcon(":/images/save.png"));
+    ui->toolButton_copy->setIcon(QIcon(":/images/copy.png"));
+    ui->toolButton_approve->setIcon(QIcon(":/images/approve.png"));
+    ui->toolButton_search->setIcon(QIcon(":/images/search.png"));
     for(int i=0;i<MAXLANGUAGE;i++){
         ui->lang_ori_select->addItem(lang_code[i]);
         ui->lang_tar_select->addItem(lang_code[i]);
@@ -959,5 +960,20 @@ void MainWindow::on_relevant_strings_itemDoubleClicked(QTreeWidgetItem *item, in
     if(!key.isEmpty()&&mymap.contains(key)){
         ui->maintable->selectRow(mymap[key].id->row());
     }
+}
+
+
+void MainWindow::on_actionCopy_source_to_target_triggered()
+{
+    preptableforupdate(true);
+    auto tmp=ui->maintable->selectedRanges();
+    mydata *k;
+    for(auto i=tmp.begin();i!=tmp.end();++i){
+        for(int j=i->topRow();j<=i->bottomRow();j++){
+            k=row2dat[j];
+            k->tar->setText(k->ori->text());
+        }
+    }
+    preptableforupdate(false);
 }
 

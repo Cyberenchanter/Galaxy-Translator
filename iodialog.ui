@@ -90,6 +90,9 @@
     </item>
     <item row="0" column="1">
      <widget class="QComboBox" name="combo_de">
+      <property name="toolTip">
+       <string>Select &quot;Update and Trust&quot; if you plan to use it as the original language or this locale doesn't need translation.</string>
+      </property>
       <property name="editable">
        <bool>false</bool>
       </property>
@@ -100,12 +103,12 @@
       </item>
       <item>
        <property name="text">
-        <string>New Item Only</string>
+        <string>Update</string>
        </property>
       </item>
       <item>
        <property name="text">
-        <string>Fully Trust and Update</string>
+        <string>Update and Trust</string>
        </property>
       </item>
      </widget>
@@ -119,6 +122,9 @@
     </item>
     <item row="0" column="3">
      <widget class="QComboBox" name="combo_ko">
+      <property name="toolTip">
+       <string>Select &quot;Update and Trust&quot; if you plan to use it as the original language or this locale doesn't need translation.</string>
+      </property>
       <item>
        <property name="text">
         <string>Don't Update</string>
@@ -126,12 +132,12 @@
       </item>
       <item>
        <property name="text">
-        <string>New Item Only</string>
+        <string>Update</string>
        </property>
       </item>
       <item>
        <property name="text">
-        <string>Fully Trust and Update</string>
+        <string>Update and Trust</string>
        </property>
       </item>
      </widget>
@@ -145,6 +151,9 @@
     </item>
     <item row="1" column="1">
      <widget class="QComboBox" name="combo_en">
+      <property name="toolTip">
+       <string>Select &quot;Update and Trust&quot; if you plan to use it as the original language or this locale doesn't need translation.</string>
+      </property>
       <item>
        <property name="text">
         <string>Don't Update</string>
@@ -152,12 +161,12 @@
       </item>
       <item>
        <property name="text">
-        <string>New Item Only</string>
+        <string>Update</string>
        </property>
       </item>
       <item>
        <property name="text">
-        <string>Fully Trust and Update</string>
+        <string>Update and Trust</string>
        </property>
       </item>
      </widget>
@@ -171,6 +180,9 @@
     </item>
     <item row="1" column="3">
      <widget class="QComboBox" name="combo_pl">
+      <property name="toolTip">
+       <string>Select &quot;Update and Trust&quot; if you plan to use it as the original language or this locale doesn't need translation.</string>
+      </property>
       <item>
        <property name="text">
         <string>Don't Update</string>
@@ -178,12 +190,12 @@
       </item>
       <item>
        <property name="text">
-        <string>New Item Only</string>
+        <string>Update</string>
        </property>
       </item>
       <item>
        <property name="text">
-        <string>Fully Trust and Update</string>
+        <string>Update and Trust</string>
        </property>
       </item>
      </widget>
@@ -197,6 +209,9 @@
     </item>
     <item row="2" column="1">
      <widget class="QComboBox" name="combo_es">
+      <property name="toolTip">
+       <string>Select &quot;Update and Trust&quot; if you plan to use it as the original language or this locale doesn't need translation.</string>
+      </property>
       <item>
        <property name="text">
         <string>Don't Update</string>
@@ -204,12 +219,12 @@
       </item>
       <item>
        <property name="text">
-        <string>New Item Only</string>
+        <string>Update</string>
        </property>
       </item>
       <item>
        <property name="text">
-        <string>Fully Trust and Update</string>
+        <string>Update and Trust</string>
        </property>
       </item>
      </widget>
@@ -223,6 +238,9 @@
     </item>
     <item row="2" column="3">
      <widget class="QComboBox" name="combo_pt">
+      <property name="toolTip">
+       <string>Select &quot;Update and Trust&quot; if you plan to use it as the original language or this locale doesn't need translation.</string>
+      </property>
       <item>
        <property name="text">
         <string>Don't Update</string>
@@ -230,12 +248,12 @@
       </item>
       <item>
        <property name="text">
-        <string>New Item Only</string>
+        <string>Update</string>
        </property>
       </item>
       <item>
        <property name="text">
-        <string>Fully Trust and Update</string>
+        <string>Update and Trust</string>
        </property>
       </item>
      </widget>
@@ -249,6 +267,9 @@
     </item>
     <item row="3" column="1">
      <widget class="QComboBox" name="combo_esmx">
+      <property name="toolTip">
+       <string>Select &quot;Update and Trust&quot; if you plan to use it as the original language or this locale doesn't need translation.</string>
+      </property>
       <item>
        <property name="text">
         <string>Don't Update</string>
@@ -256,12 +277,12 @@
       </item>
       <item>
        <property name="text">
-        <string>New Item Only</string>
+        <string>Update</string>
        </property>
       </item>
       <item>
        <property name="text">
-        <string>Fully Trust and Update</string>
+        <string>Update and Trust</string>
        </property>
       </item>
      </widget>
@@ -275,6 +296,9 @@
     </item>
     <item row="3" column="3">
      <widget class="QComboBox" name="combo_ru">
+      <property name="toolTip">
+       <string>Select &quot;Update and Trust&quot; if you plan to use it as the original language or this locale doesn't need translation.</string>
+      </property>
       <item>
        <property name="text">
         <string>Don't Update</string>
@@ -282,12 +306,12 @@
       </item>
       <item>
        <property name="text">
-        <string>New Item Only</string>
+        <string>Update</string>
        </property>
       </item>
       <item>
        <property name="text">
-        <string>Fully Trust and Update</string>
+        <string>Update and Trust</string>
        </property>
       </item>
      </widget>
@@ -301,6 +325,9 @@
     </item>
     <item row="4" column="1">
      <widget class="QComboBox" name="combo_fr">
+      <property name="toolTip">
+       <string>Select &quot;Update and Trust&quot; if you plan to use it as the original language or this locale doesn't need translation.</string>
+      </property>
       <item>
        <property name="text">
         <string>Don't Update</string>
@@ -308,12 +335,12 @@
       </item>
       <item>
        <property name="text">
-        <string>New Item Only</string>
+        <string>Update</string>
        </property>
       </item>
       <item>
        <property name="text">
-        <string>Fully Trust and Update</string>
+        <string>Update</string>
        </property>
       </item>
      </widget>
@@ -327,6 +354,9 @@
     </item>
     <item row="4" column="3">
      <widget class="QComboBox" name="combo_zhcn">
+      <property name="toolTip">
+       <string>Select &quot;Update and Trust&quot; if you plan to use it as the original language or this locale doesn't need translation.</string>
+      </property>
       <item>
        <property name="text">
         <string>Don't Update</string>
@@ -334,12 +364,12 @@
       </item>
       <item>
        <property name="text">
-        <string>New Item Only</string>
+        <string>Update</string>
        </property>
       </item>
       <item>
        <property name="text">
-        <string>Fully Trust and Update</string>
+        <string>Update and Trust</string>
        </property>
       </item>
      </widget>
@@ -353,6 +383,9 @@
     </item>
     <item row="5" column="1">
      <widget class="QComboBox" name="combo_it">
+      <property name="toolTip">
+       <string>Select &quot;Update and Trust&quot; if you plan to use it as the original language or this locale doesn't need translation.</string>
+      </property>
       <item>
        <property name="text">
         <string>Don't Update</string>
@@ -360,12 +393,12 @@
       </item>
       <item>
        <property name="text">
-        <string>New Item Only</string>
+        <string>Update</string>
        </property>
       </item>
       <item>
        <property name="text">
-        <string>Fully Trust and Update</string>
+        <string>Update and Trust</string>
        </property>
       </item>
      </widget>
@@ -379,6 +412,9 @@
     </item>
     <item row="5" column="3">
      <widget class="QComboBox" name="combo_zhtw">
+      <property name="toolTip">
+       <string>Select &quot;Update and Trust&quot; if you plan to use it as the original language or this locale doesn't need translation.</string>
+      </property>
       <item>
        <property name="text">
         <string>Don't Update</string>
@@ -386,12 +422,12 @@
       </item>
       <item>
        <property name="text">
-        <string>New Item Only</string>
+        <string>Update</string>
        </property>
       </item>
       <item>
        <property name="text">
-        <string>Fully Trust and Update</string>
+        <string>Update and Trust</string>
        </property>
       </item>
      </widget>
@@ -419,6 +455,9 @@
       <height>20</height>
      </rect>
     </property>
+    <property name="toolTip">
+     <string>Game strings with ID starting with Abil or Effect will be ignored.</string>
+    </property>
     <property name="text">
      <string>Reduct Development Only Strings</string>
     </property>
@@ -434,6 +473,9 @@
       <width>281</width>
       <height>20</height>
      </rect>
+    </property>
+    <property name="toolTip">
+     <string>Access the gamedata folder in order to display relevant strings.</string>
     </property>
     <property name="text">
      <string>Parse Data</string>

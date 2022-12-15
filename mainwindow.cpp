@@ -76,7 +76,7 @@ bool MainWindow::maybeSave()
     if (!isWindowModified())
         return true;
     const QMessageBox::StandardButton ret
-        = QMessageBox::warning(this, tr("Application"),
+        = QMessageBox::warning(this, tr("Warning"),
                                tr("The document has been modified.\n"
                                   "Do you want to save your changes?"),
                                QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
@@ -91,14 +91,34 @@ bool MainWindow::maybeSave()
     return true;
 }
 
+bool MainWindow::maybeReload()
+{
+    if (ui->maintable->rowCount()==0)
+        return false;
+    const QMessageBox::StandardButton ret
+        = QMessageBox::information(this, tr("Confirm Reload"),
+                               tr("Do you want to reload the current project?\n"
+                                  "Select no to import a new project."),
+                               QMessageBox::Yes | QMessageBox::No);
+    switch (ret) {
+    case QMessageBox::Yes:
+        return true;
+    case QMessageBox::No:
+        return false;
+    default:
+        break;
+    }
+    return false;
+}
+
 void MainWindow::inittable()
 {
-    rowcount=0;
     ui->maintable->setRowCount(0);
 }
 
 void MainWindow::updatestat(mydata *i)
 {
+    i->stat=0;
     if(!i->lang[lang_ori].isEmpty()){
         if(i->version[lang_ori]>i->version[lang_tar])
             i->stat=1;
@@ -108,8 +128,6 @@ void MainWindow::updatestat(mydata *i)
         if(!i->lang[lang_tar].isEmpty()){
             if(i->version[lang_ori]>i->version[lang_tar])
                 i->stat=3;
-        }else{
-            i->stat=0;
         }
     }
     i->stat_display->setData(0,stat_code[i->stat]);
@@ -311,15 +329,12 @@ void MainWindow::import_gamestring(const QString &filename,int lang_index,ioopti
                 continue;
         }
         text=buf.right(buf.length()-1-index);
-        if(opt.lang_state[lang_index]==1){
-            if(mymap[id].lang[lang_index].isEmpty())
-                mymap[id].lang[lang_index]=text;
-        }else{
+        if(opt.lang_state[lang_index]==2){
             if(mymap[id].lang[lang_index]!=text){
-                mymap[id].lang[lang_index]=text;
                 mymap[id].version[lang_index]++;
             }
         }
+        mymap[id].lang[lang_index]=text;
     }
 }
 QString MainWindow::validatetogetrealid(const QString &fullstring,const QString &prefix){
@@ -515,6 +530,8 @@ void MainWindow::import_project(iooptions &option){
     #endif
     QString path;
     for(int i=0;i<MAXLANGUAGE;i++){
+        if(option.lang_state[i]==0)
+            continue;
         path=option.dir+lang_code[i]+".SC2Data/LocalizedData/GameStrings.txt";
         import_gamestring(path,i,option);
     }
@@ -641,25 +658,35 @@ void MainWindow::preptableforupdate(bool is)
 }
 void MainWindow::on_actionNew_File_triggered()
 {
-    if(maybeSave()){
+    if(maybeReload()){
         IODialog iodiag;
         iooptions options;
         if(iodiag.exec()==QDialog::Accepted){
             preptableforupdate(true);
-            //ui->maintable->clearContents();
-            ui->maintable->setRowCount(0);
-            ui->relevant_strings->clear();
-            mymap.clear();
-            row2dat.clear();
-            rowcount=0;
             iodiag.getoptions(options);
             import_project(options);
-            setWindowTitle(options.dir);
-            setWindowModified(false);
+            setWindowModified(true);
             preptableforupdate(false);
         }
     }
-
+    else
+        if(maybeSave()){
+            IODialog iodiag;
+            iooptions options;
+            if(iodiag.exec()==QDialog::Accepted){
+                preptableforupdate(true);
+                //ui->maintable->clearContents();
+                ui->maintable->setRowCount(0);
+                ui->relevant_strings->clear();
+                mymap.clear();
+                row2dat.clear();
+                iodiag.getoptions(options);
+                import_project(options);
+                setWindowTitle(options.dir);
+                setWindowModified(true);
+                preptableforupdate(false);
+            }
+        }
 }
 
 
@@ -674,7 +701,6 @@ void MainWindow::on_actionOpen_triggered()
             ui->relevant_strings->clear();
             mymap.clear();
             row2dat.clear();
-            rowcount=0;
             loadFile(fileName);
             setCurrentFile(fileName);
             preptableforupdate(false);
@@ -707,7 +733,18 @@ bool MainWindow::on_actionSave_As_triggered()
 
 void MainWindow::on_actionClose_triggered()
 {
-    close();
+    if(ui->maintable->rowCount()>0){
+        if(maybeSave()){
+            preptableforupdate(true);
+            ui->maintable->setRowCount(0);
+            ui->relevant_strings->clear();
+            mymap.clear();
+            row2dat.clear();
+            setCurrentFile(QString());
+            preptableforupdate(false);
+        }
+    }else
+        close();
 }
 
 

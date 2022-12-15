@@ -446,7 +446,7 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>V1.0</string>
+    <string notr="true">V1.0</string>
    </property>
   </action>
   <action name="actionApprove">
@@ -464,7 +464,7 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Made with love by Cyberenchanter</string>
+    <string notr="true">Made with love by Cyberenchanter</string>
    </property>
   </action>
   <action name="actionCopy_source_to_target">

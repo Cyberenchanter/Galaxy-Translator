@@ -82,6 +82,7 @@ private:
     bool save();
     bool saveAs();
     bool maybeSave();
+    bool maybeReload();
     void import_gamestring(const QString &fileName,int lang_index,iooptions &opt);
     void import_project(iooptions &option);
     void export_project(iooptions &option);
@@ -98,7 +99,7 @@ private:
     QString lang_code[MAXLANGUAGE]={"deDE","enUS","esES","esMX","frFR","itIT","koKR","plPL","ptBR","ruRU","zhCN","zhTW"};
     QString stat_code[4]={"Unknown","Needs Translation","Translated","Pending Deletion"};
     QString link_stat[2][MAXLINKSTAT+1]={"","Behavior Tooltip","Button Tooltip","Unit Built","Upgrade Researched","Behavior on Unit","Button on Unit","Weapon on Unit","","Behavior Name","Button Name","Button that Builds Unit","Button that Researches Upgrade","Unit Having this Behavior","Unit Having this Button","Unit Having this Weapon"};
-    int rowcount,lang_ori=-1,lang_tar=-1;
+    int lang_ori=-1,lang_tar=-1;
     struct interlink{
         int type;
         QString id;

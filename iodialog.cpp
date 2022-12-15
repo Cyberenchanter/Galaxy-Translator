@@ -27,7 +27,8 @@ IODialog::IODialog(QWidget *parent,bool is_out) :
     if(is_out){
         ui->misc->hide();
         for(int i=0;i<MAXLANGUAGE;i++){
-            combo[i]->removeItem(1);
+            combo[i]->removeItem(2);
+            combo[i]->setToolTip(QString());
         }
         setWindowTitle(QString("Export to component folder"));
     }else{
@@ -59,11 +60,10 @@ void IODialog::updatedir(){
     for(int i=0;i<MAXLANGUAGE;i++){
         path=dir+lang_code[i]+".SC2Data/LocalizedData/GameStrings.txt";
         QFile file(path);
+        combo[i]->setCurrentIndex(0);
         if(file.exists()){
             combo[i]->setEnabled(true);
-            combo[i]->setCurrentIndex(1);
         }else{
-            combo[i]->setCurrentIndex(0);
             combo[i]->setEnabled(false);
         }
     }

@@ -96,9 +96,40 @@ private:
     bool past_search_area[4]={1,1,0,1},past_search_stat[4]={0,1,1,1};
     QString past_search_key;
     QString curFile;
+    QString stat_code(int index){
+        switch (index){
+        case 0:return tr("Unknown");
+        case 1:return tr("Needs Translation");
+        case 2:return tr("Translated");
+        case 3:return tr("Pending Deletion");
+        default :return QString();
+        }
+    }
+    QString link_stat(bool is_negaive,int index){
+        if(!is_negaive)
+            switch (index){
+            case 1:return tr("Behavior Tooltip");
+            case 2:return tr("Button Tooltip");
+            case 3:return tr("Unit Built");
+            case 4:return tr("Upgrade Researched");
+            case 5:return tr("Behavior on Unit");
+            case 6:return tr("Button on Unit");
+            case 7:return tr("Weapon on Unit");
+            default :return QString();
+            }
+        else
+            switch (index){
+            case 1:return tr("Behavior Name");
+            case 2:return tr("Button Name");
+            case 3:return tr("Button that Builds this Unit");
+            case 4:return tr("Button that Researches this Upgrade");
+            case 5:return tr("Unit Having this Behavior");
+            case 6:return tr("Unit Having this Button");
+            case 7:return tr("Unit Having this Weapon");
+            default :return QString();
+            }
+    }
     QString lang_code[MAXLANGUAGE]={"deDE","enUS","esES","esMX","frFR","itIT","koKR","plPL","ptBR","ruRU","zhCN","zhTW"};
-    QString stat_code[4]={"Unknown","Needs Translation","Translated","Pending Deletion"};
-    QString link_stat[2][MAXLINKSTAT+1]={"","Behavior Tooltip","Button Tooltip","Unit Built","Upgrade Researched","Behavior on Unit","Button on Unit","Weapon on Unit","","Behavior Name","Button Name","Button that Builds Unit","Button that Researches Upgrade","Unit Having this Behavior","Unit Having this Button","Unit Having this Weapon"};
     int lang_ori=-1,lang_tar=-1;
     struct interlink{
         int type;

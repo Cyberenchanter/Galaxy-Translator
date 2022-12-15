@@ -130,7 +130,7 @@ void MainWindow::updatestat(mydata *i)
                 i->stat=3;
         }
     }
-    i->stat_display->setData(0,stat_code[i->stat]);
+    i->stat_display->setText(stat_code(i->stat));
 }
 
 void MainWindow::parsefile(const QString &buf)
@@ -188,7 +188,7 @@ void MainWindow::setCurrentFile(const QString &fileName)
     setWindowModified(false);
     QString shownName = curFile;
     if (curFile.isEmpty())
-        shownName = "untitled";
+        shownName = tr("untitled");
     setWindowTitle(QString());
     setWindowFilePath(shownName);
 }
@@ -667,6 +667,7 @@ void MainWindow::on_actionNew_File_triggered()
             import_project(options);
             setWindowModified(true);
             preptableforupdate(false);
+            ui->statusbar->showMessage(tr("Project Reloaded"), 2000);
         }
     }
     else
@@ -685,6 +686,7 @@ void MainWindow::on_actionNew_File_triggered()
                 setWindowTitle(options.dir);
                 setWindowModified(true);
                 preptableforupdate(false);
+                ui->statusbar->showMessage(tr("Project Imported"), 2000);
             }
         }
 }
@@ -704,6 +706,7 @@ void MainWindow::on_actionOpen_triggered()
             loadFile(fileName);
             setCurrentFile(fileName);
             preptableforupdate(false);
+            ui->statusbar->showMessage(tr("File opened"), 2000);
         }
     }
 }
@@ -723,7 +726,7 @@ bool MainWindow::on_actionSave_As_triggered()
 {
     QFileDialog dialog(this);
     dialog.setAcceptMode(QFileDialog::AcceptSave);
-    dialog.setNameFilter("Galaxy Translator Project (*.galaxytrans)");
+    dialog.setNameFilter(tr("Galaxy Translator Project (*.galaxytrans)"));
     dialog.setDefaultSuffix("galaxytrans");
     if (dialog.exec() != QDialog::Accepted)
         return false;
@@ -885,9 +888,9 @@ void MainWindow::on_actionCopy_triggered()
         for(int j=i->topRow();j<=i->bottomRow();j++){
             for(int k=i->leftColumn();k<=i->rightColumn();k++){
                 switch(k){
-                case 0: text+=QString("ID \n");text+=row2dat[j]->id->text();text+='\n';break;
-                case 1: text+=QString("Source Language \n");text+=row2dat[j]->ori->text();text+='\n';break;
-                case 3: text+=QString("Target Language \n");text+=row2dat[j]->tar->text();text+='\n';break;
+                case 0: text+="ID ";text+=row2dat[j]->id->text();text+='\n';break;
+                case 1: text+=tr("Source Language ");text+=row2dat[j]->ori->text();text+='\n';break;
+                case 3: text+=tr("Target Language ");text+=row2dat[j]->tar->text();text+='\n';break;
                 }
             }
         }
@@ -988,7 +991,7 @@ void MainWindow::on_maintable_itemSelectionChanged()
         rstat=abs(link->at(i).type);
         if(!stat2index[is_negative][rstat].isValid()){
             QTreeWidgetItem *topitem=new QTreeWidgetItem;
-            topitem->setText(0,link_stat[is_negative][rstat]);
+            topitem->setText(0,link_stat(is_negative,rstat));
             ui->relevant_strings->addTopLevelItem(topitem);
             stat2index[is_negative][rstat]=ui->relevant_strings->indexFromItem(topitem,0);
         }

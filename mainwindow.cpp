@@ -974,6 +974,8 @@ void MainWindow::on_maintable_itemSelectionChanged()
 {
     ui->relevant_strings->clear();
     auto list=ui->maintable->selectedRanges();
+    if(list.size()<=0||list.size()>3)
+        return;
     int row=list[0].topRow();
     for(int i=0,len=list.size();i<len;i++){
         if(list[i].topRow()!=row||list[i].bottomRow()!=row)
